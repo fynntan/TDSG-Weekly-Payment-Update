@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="color-scheme" content="light" />
+    <title>TDSG Weekly Payment Report &mdash; Week 5 &middot; 27 July&ndash;02 August
+      2026</title>
+    <style>
+      :root {
+              --navy: #1c3a5e;
+              --ink: #25221e;
+              --muted: #6b655c;
+              --paper: #f5f1e8;
+              --line: #ded7ca;
+              --white: #ffffff;
+            }
+
+            * {
+              box-sizing: border-box;
+            }
+
+            html {
+              scroll-behavior: smooth;
+            }
+
+            body {
+              margin: 0;
+              background: var(--paper);
+              color: var(--ink);
+              font-family: Arial, Helvetica, sans-serif;
+              font-size: 13px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 1.45;
+            }
+
+            .top {
+              position: sticky;
+              top: 0;
+              z-index: 20;
+              display: flex;
+              min-height: 42px;
+              align-items: center;
+              padding: 4px 14px;
+              border-bottom: 1px solid var(--line);
+              background: var(--white);
+            }
+
+            .logo-mark {
+              display: block;
+              width: 34px;
+              height: 34px;
+              flex: 0 0 34px;
+              object-fit: contain;
+            }
+
+            .brand-name {
+              display: flex;
+              min-height: 34px;
+              align-items: center;
+              margin-left: 6px;
+              color: var(--navy);
+              font-size: 15px;
+              font-weight: 700;
+              line-height: 1.1;
+            }
+
+            .w {
+              width: min(100%, 1320px);
+              margin: 0 auto;
+              padding: 20px 24px 26px;
+            }
+
+            .eye {
+              color: var(--navy);
+              font-size: 10px;
+              font-weight: 700;
+              letter-spacing: 0.16em;
+              text-transform: uppercase;
+            }
+
+            h1,
+            h2 {
+              color: var(--navy);
+              font-family: Arial, Helvetica, sans-serif;
+              font-style: normal;
+              font-weight: 700;
+            }
+
+            h1 {
+              margin: 5px 0 0;
+              font-size: 28px;
+              line-height: 1.15;
+            }
+
+            h2 {
+              margin: 20px 0 8px;
+              font-size: 20px;
+              line-height: 1.2;
+            }
+
+            .org {
+              display: none;
+            }
+
+            .meta {
+              margin-top: 9px;
+              padding-top: 7px;
+              border-top: 1px solid var(--line);
+              color: var(--muted);
+            }
+
+            .meta b {
+              color: var(--ink);
+              font-weight: 700;
+            }
+
+            .panel {
+              width: min(100%, 680px);
+              padding: 10px 14px;
+              border: 1px solid var(--line);
+              border-left: 5px solid var(--navy);
+              border-radius: 12px;
+              background: var(--white);
+            }
+
+            .br {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: 16px;
+              min-height: 28px;
+              padding: 4px 0;
+              border-bottom: 1px dashed #e8e1d5;
+              line-height: 1.35;
+            }
+
+            .br:last-child {
+              border-bottom: 0;
+            }
+
+            .br .amt {
+              flex: 0 0 auto;
+              text-align: right;
+              font-variant-numeric: tabular-nums;
+            }
+
+            .summary-total,
+            .rouge-total,
+            .grand {
+              font-weight: 700;
+            }
+
+            .sub,
+            .sub b,
+            .sub .amt {
+              padding-left: 16px;
+              font-weight: 400;
+            }
+
+            .rouge-total {
+              margin-top: 2px;
+              border-top: 1px solid var(--line);
+            }
+
+            .rouge-detail {
+              border-bottom: 2px solid var(--navy);
+            }
+
+            .tw {
+              width: 100%;
+              overflow-x: auto;
+              border: 1px solid var(--line);
+              border-radius: 11px;
+              background: var(--white);
+              box-shadow: none;
+              -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+              width: 100%;
+              min-width: 960px;
+              border-collapse: collapse;
+              table-layout: fixed;
+              font-family: Arial, Helvetica, sans-serif;
+              font-size: 12px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 1.35;
+            }
+
+            th,
+            td {
+              height: 34px;
+              padding: 6px 8px;
+              vertical-align: middle;
+            }
+
+            th {
+              background: var(--navy);
+              color: var(--white);
+              font-size: 11px;
+              font-weight: 700;
+              text-align: left;
+              white-space: nowrap;
+            }
+
+            td {
+              border-bottom: 1px solid #ece6dc;
+            }
+
+            tbody tr:nth-child(even):not(.tot) {
+              background: #fbfaf7;
+            }
+
+            tbody tr:last-child td {
+              border-bottom: 0;
+            }
+
+            td b {
+              font-weight: 400;
+            }
+
+            .num {
+              text-align: right;
+              white-space: nowrap;
+              font-variant-numeric: tabular-nums;
+            }
+
+            .tot td {
+              border-top: 2px solid var(--navy);
+              background: #f1ede5;
+              font-weight: 700;
+            }
+
+            th:nth-child(1) {
+              width: 4%;
+            }
+
+            th:nth-child(2) {
+              width: 12%;
+            }
+
+            th:nth-child(3) {
+              width: 10%;
+            }
+
+            th:nth-child(4) {
+              width: 14%;
+            }
+
+            th:nth-child(5) {
+              width: 22%;
+            }
+
+            th:nth-child(6) {
+              width: 15%;
+            }
+
+            th:nth-child(7) {
+              width: 9%;
+            }
+
+            th:nth-child(8) {
+              width: 7%;
+            }
+
+            th:nth-child(9) {
+              width: 7%;
+            }
+
+            .tag {
+              display: inline-block;
+              padding: 2px 8px;
+              border-radius: 999px;
+              font-size: 12px;
+              font-weight: 400;
+              line-height: 1.25;
+            }
+
+            .tag.staff {
+              background: #dbe8f7;
+              color: #173f70;
+            }
+
+            .tag.site {
+              background: #e6ddf5;
+              color: #5b3f8f;
+            }
+
+            .tag.office {
+              background: #e4e7eb;
+              color: #4b5563;
+            }
+
+            .tag.comm {
+              background: #dcefe3;
+              color: #236b46;
+            }
+
+            .tag.parts {
+              background: #f4e6c8;
+              color: #765314;
+            }
+
+            .tag.log {
+              background: #dceff5;
+              color: #24657a;
+            }
+
+            .tag.ga {
+              background: #f3dfdc;
+              color: #8a3f35;
+            }
+
+            footer {
+              margin-top: 22px;
+              padding-top: 10px;
+              border-top: 1px solid var(--line);
+              color: var(--muted);
+              font-size: 11px;
+            }
+
+            @media (max-width: 900px) {
+              .top {
+                min-height: 40px;
+                padding: 4px 8px;
+              }
+
+              .logo-mark {
+                width: 31px;
+                height: 31px;
+                flex-basis: 31px;
+              }
+
+              .brand-name {
+                min-height: 31px;
+                margin-left: 5px;
+                font-size: 14px;
+              }
+
+              .w {
+                padding: 16px 12px 22px;
+              }
+
+              h1 {
+                font-size: 23px;
+              }
+
+              h2 {
+                margin-top: 17px;
+                font-size: 18px;
+              }
+
+              .panel {
+                padding: 9px 11px;
+              }
+            }
+
+            @media (max-width: 420px) {
+              .brand-name {
+                font-size: 13px;
+              }
+
+              .br {
+                gap: 10px;
+              }
+            }
+
+            @media print {
+              body {
+                background: var(--white);
+              }
+
+              .top {
+                position: static;
+              }
+
+              .w {
+                max-width: none;
+                padding: 14px 16px;
+              }
+
+              .tw {
+                overflow: visible;
+              }
+
+              table {
+                min-width: 0;
+                font-size: 10px;
+              }
+
+              th,
+              td {
+                padding: 4px 5px;
+              }
+            }
+
+            @page {
+              size: A4 landscape;
+              margin: 10mm;
+            }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <img
+        class="logo-mark"
+        src="data:image/png;base64,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"
+        alt="TOP emblem"
+      />
+      <span class="brand-name">TOP DEVELOPMENT SERVICES GUINEA SARLU</span>
+    </header>
+    <main class="w">
+      <div class="eye">Weekly Payment Report &middot; Week 5</div>
+      <h1>27 July&ndash;02 August 2026</h1>
+      <div class="meta">
+        Prepared by <b>Fynn Tan</b> &middot; Reviewed by <b>Venus Tham</b>
+      </div>
+      <section id="breakdown">
+        <h2>Payment Summary by Category (USD)</h2>
+        <div class="panel">
+          <div class="br summary-total">
+            <b>TDSG payments</b><span class="amt">186,839</span>
+          </div>
+          <div class="br sub">
+            <span>&middot; Conakry Office Expenses</span
+            ><b class="amt">1,134</b>
+          </div>
+          <div class="br sub">
+            <span>&middot; Staff Costs</span><b class="amt">95,627</b>
+          </div>
+          <div class="br sub">
+            <span>&middot; HR &amp; Community</span><b class="amt">77,546</b>
+          </div>
+          <div class="br sub">
+            <span
+              >&middot; Other Purchase Costs (Freight, logistics, customs
+              clearance)</span
+            ><b class="amt">12,532</b>
+          </div>
+          <div class="br rouge-total">
+            <span>Rouge POB total</span><span class="amt">9,992</span>
+          </div>
+          <div class="br sub rouge-detail">
+            <span
+              >&middot; Other Purchase Costs (Freight, logistics, customs
+              clearance)</span
+            ><span class="amt">9,992</span>
+          </div>
+          <div class="br grand">
+            <span>Week Total</span><span class="amt">196,831</span>
+          </div>
+        </div>
+      </section>
+      <section id="detail">
+        <h2>Payment Detail</h2>
+        <div class="tw">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>PRF No</th>
+                <th>Payment Date</th>
+                <th>Payee / Supplier</th>
+                <th>Purpose</th>
+                <th>Category</th>
+                <th class="num">GNF</th>
+                <th class="num">USD</th>
+                <th>Ex. rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>TDSG-2026-07-244</td>
+                <td>27/07/2026</td>
+                <td><b>Mariam Transit</b></td>
+                <td>
+                  Winning Angel WA2644SH303A - Higer Bus Custom Clearance Fee
+                  (MT000044)
+                </td>
+                <td>
+                  <span class="tag log"
+                    >Other Purchase Costs (Freight, logistics, customs
+                    clearance)</span
+                  >
+                </td>
+                <td class="num">3,540,000</td>
+                <td class="num">404</td>
+                <td>Rate 1:8,757</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>TDSG-2026-07-242</td>
+                <td>27/07/2026</td>
+                <td><b>Zhengwei SARLU</b></td>
+                <td>Transportation Fee For Winning Peace Equipment</td>
+                <td>
+                  <span class="tag log"
+                    >Other Purchase Costs (Freight, logistics, customs
+                    clearance)</span
+                  >
+                </td>
+                <td class="num">106,200,000</td>
+                <td class="num">12,128</td>
+                <td>Rate 1:8,757</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>TDSG-2026-07-253</td>
+                <td>27/07/2026</td>
+                <td><b>GMS</b></td>
+                <td>Community Services For Jun&#x27;26 Production</td>
+                <td><span class="tag comm">HR &amp; Community</span></td>
+                <td class="num">679,067,353</td>
+                <td class="num">77,546</td>
+                <td>Rate 1:8,757</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>TDSG-2026-07-266</td>
+                <td>27/07/2026</td>
+                <td><b>Mokatour</b></td>
+                <td>Local Guinean Salary For Conakry Office Jul&#x27;26</td>
+                <td><span class="tag staff">Staff Costs</span></td>
+                <td class="num">13,380,000</td>
+                <td class="num">1,528</td>
+                <td>Rate 1:8,757</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>TDSG-2026-07-265</td>
+                <td>27/07/2026</td>
+                <td><b>Mokatour</b></td>
+                <td>Local Guinean Salary For Site Jul&#x27;26</td>
+                <td><span class="tag staff">Staff Costs</span></td>
+                <td class="num">719,022,000</td>
+                <td class="num">82,109</td>
+                <td>Rate 1:8,757</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>TDSG-2026-07-269</td>
+                <td>29/07/2026</td>
+                <td><b>Petty Cash</b></td>
+                <td>
+                  Security Expenses Of Military Police Officers For Kimbo And
+                  AB-57 Project Jul&#x27;26
+                </td>
+                <td><span class="tag staff">Staff Costs</span></td>
+                <td class="num">18,000,000</td>
+                <td class="num">2,055</td>
+                <td>Rate 1:8,757</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>TDSG-2026-07-270</td>
+                <td>29/07/2026</td>
+                <td><b>Petty Cash</b></td>
+                <td>
+                  HSSE And Military Advisor&#x27;s Allowance For Jul&#x27;26
+                </td>
+                <td><span class="tag staff">Staff Costs</span></td>
+                <td class="num">19,500,000</td>
+                <td class="num">2,227</td>
+                <td>Rate 1:8,757</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>TDSG-2026-07-271</td>
+                <td>29/07/2026</td>
+                <td><b>Petty Cash - HP</b></td>
+                <td>Mobile Prepaid Card Monthly Expenses For June&#x27;26</td>
+                <td><span class="tag staff">Staff Costs</span></td>
+                <td class="num">9,300,000</td>
+                <td class="num">1,062</td>
+                <td>Rate 1:8,757</td>
+              </tr>
+              <tr>
+                <td>9</td>
+                <td>TDSG-2026-07-268</td>
+                <td>30/07/2026</td>
+                <td><b>Mokatour</b></td>
+                <td>
+                  Medical Expenses For Local Staff For May&#x27;26 To
+                  Jul&#x27;26
+                </td>
+                <td><span class="tag staff">Staff Costs</span></td>
+                <td class="num">31,099,000</td>
+                <td class="num">3,550</td>
+                <td>Rate 1:8,761</td>
+              </tr>
+              <tr>
+                <td>10</td>
+                <td>TDSG-2026-07-267</td>
+                <td>30/07/2026</td>
+                <td><b>Mokatour</b></td>
+                <td>Allowance Of Milk For Jul&#x27;26</td>
+                <td><span class="tag staff">Staff Costs</span></td>
+                <td class="num">14,700,000</td>
+                <td class="num">1,678</td>
+                <td>Rate 1:8,761</td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td>TDSG-2026-07-247</td>
+                <td>30/07/2026</td>
+                <td><b>Hotel Kaloum</b></td>
+                <td>Accommodation Fee For Expats Jul&#x27;26</td>
+                <td><span class="tag staff">Staff Costs</span></td>
+                <td class="num">12,420,000</td>
+                <td class="num">1,418</td>
+                <td>Rate 1:8,761</td>
+              </tr>
+              <tr>
+                <td>12</td>
+                <td>TDSG-2026-07-273</td>
+                <td>31/07/2026</td>
+                <td><b>Petty Cash - Geng Hua Tong</b></td>
+                <td>GHT Working Adv For Jul&#x27;26</td>
+                <td><span class="tag office">Conakry Office Expenses</span></td>
+                <td class="num">9,940,000</td>
+                <td class="num">1,134</td>
+                <td>Rate 1:8,763</td>
+              </tr>
+              <tr class="tot">
+                <td colspan="6">TDSG subtotal &mdash; 12 payments</td>
+                <td class="num">1,636,168,353</td>
+                <td class="num">186,839</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h2>Payment on behalf by Rouge</h2>
+        <div class="tw r">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>PRF No</th>
+                <th>Date</th>
+                <th>Payee</th>
+                <th>Purpose</th>
+                <th>Category</th>
+                <th class="num">GNF</th>
+                <th class="num">USD</th>
+                <th>Ex. rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>TDSG-2026-07-274</td>
+                <td>01/08/2026</td>
+                <td><b>Rouge Mining SA</b></td>
+                <td>Forwarding Fee - Winning Wave - BL WK2657SH300ABC</td>
+                <td>
+                  <span class="tag log"
+                    >Other Purchase Costs (Freight, logistics, customs
+                    clearance)</span
+                  >
+                </td>
+                <td class="num">16,370,050</td>
+                <td class="num">1,868</td>
+                <td>Rate 1:8,763</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>TDSG-2026-07-275</td>
+                <td>01/08/2026</td>
+                <td><b>Rouge Mining SA</b></td>
+                <td>Import Tax - Cali - BL HLCUHAM260530640</td>
+                <td>
+                  <span class="tag log"
+                    >Other Purchase Costs (Freight, logistics, customs
+                    clearance)</span
+                  >
+                </td>
+                <td class="num">71,192,478</td>
+                <td class="num">8,124</td>
+                <td>Rate 1:8,763</td>
+              </tr>
+              <tr class="tot">
+                <td colspan="6">Rouge POB subtotal &mdash; 2 payments</td>
+                <td class="num">87,562,528</td>
+                <td class="num">9,992</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <footer>
+        Weekly Payment Report &middot; Week 5, 27 July&ndash;02 August 2026
+        &middot; Prepared by Finance Department. GNF&rarr;USD at the BCRG rate
+        for each payment date; USD/EUR payments carry no GNF/rate.
+      </footer>
+    </main>
+    <script>
+      (function () {
+              "use strict";
+
+              function numberFrom(text) {
+                return Number(String(text || "").replace(/[^\d.-]/g, "")) || 0;
+              }
+
+              document.querySelectorAll("table tbody tr:not(.tot)").forEach(function (row) {
+                var cell = row.cells[row.cells.length - 1];
+                var value = cell ? cell.textContent.trim() : "";
+                var match = value.match(
+                  /(?:Rate 1:|GNF-to-USD conversion at 1 USD = GNF )([\d,]+)/,
+                );
+
+                if (match) {
+                  cell.textContent = "1 : " + match[1].replace(/,/g, "");
+                } else if (/^USD payment$/i.test(value)) {
+                  cell.textContent = "\u2014";
+                }
+              });
+
+              document.querySelectorAll(".tw tbody").forEach(function (tbody) {
+                var total = tbody.querySelector(".tot");
+                var rows = Array.prototype.slice.call(
+                  tbody.querySelectorAll("tr:not(.tot)"),
+                );
+
+                rows
+                  .sort(function (a, b) {
+                    return numberFrom(b.cells[7].textContent) -
+                      numberFrom(a.cells[7].textContent);
+                  })
+                  .forEach(function (row, index) {
+                    row.cells[0].textContent = String(index + 1);
+                    tbody.insertBefore(row, total);
+                  });
+              });
+
+              var panel = document.querySelector(".panel");
+              var rougeTotal = panel && panel.querySelector(".rouge-total");
+
+              if (panel && rougeTotal) {
+                Array.prototype.slice
+                  .call(panel.querySelectorAll(".br.sub:not(.rouge-detail)"))
+                  .sort(function (a, b) {
+                    return numberFrom(b.querySelector(".amt").textContent) -
+                      numberFrom(a.querySelector(".amt").textContent);
+                  })
+                  .forEach(function (row) {
+                    panel.insertBefore(row, rougeTotal);
+                  });
+              }
+            })();
+    </script>
+  </body>
+</html>

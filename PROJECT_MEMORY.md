@@ -1,43 +1,40 @@
 # TDSG Weekly Payment Update — Project Memory
 
-Last updated: 2026-08-06 (Asia/Singapore)
+Last updated: 2026-08-07 (Asia/Singapore)
 
 ## Purpose
 
-This repository is the working home for the TDSG weekly payment update.
+This repository is the working home and source of truth for TDSG weekly payment reports.
 
 ## Repository
 
 - GitHub: `fynntan/TDSG-Weekly-Payment-Update`
-- Local folder: `C:\Users\FynnTan\TDSG Weekly Payment Update`
 - Git protocol: HTTPS
 - Primary branch: `main`
 
-## Current State
+## Current state
 
-- The local folder is connected to the GitHub repository.
-- The repository was empty when this project memory was created.
-- No payment data, reports, automation, or business rules have been added yet.
+- July 2026 Week 3, Week 4, and Week 5 reports are stored under `reports/2026-07/`.
+- The approved visual, mobile, sorting, exchange-rate, subtotal, and security rules are reusable through `templates/` and `scripts/standardize-report.mjs`.
+- `npm run check` validates every committed report, including TDSG, Rouge POB, and weekly total reconciliation.
+- The generated reports are standalone and do not depend on external fonts or network assets.
 
-## Working Conventions
+## Working conventions
 
-- Keep credentials, access tokens, authentication codes, and other secrets out of the repository.
+- Keep credentials, access tokens, authentication codes, source workbooks, and personal contact details out of the repository.
 - Record the reporting period and source for every weekly payment update.
-- Document validation checks and unresolved discrepancies alongside each update.
-- Update this file when project requirements, workflows, or important decisions change.
+- Reconcile each report only through its stated report end date.
+- Use `npm run report:standardize -- <input> [output]` for each new report so future reports follow the approved standard.
+- Run `npm run check` and complete desktop plus iPhone portrait/landscape review before committing.
+- Update the templates, automated checks, README, and this memory together when requirements change.
 
-## Weekly Update Checklist
+## Weekly update checklist
 
-1. Add or refresh the source payment data.
-2. Confirm the reporting period and data source.
-3. Validate totals and investigate discrepancies.
-4. Prepare the weekly payment summary.
-5. Record unresolved items and required follow-up.
-6. Commit and push the reviewed update.
-
-## Open Items
-
-- Define the required input data format.
-- Define the weekly report output format.
-- Confirm calculation and validation rules.
-- Confirm the weekly reporting deadline and recipients.
+1. Add or refresh the source payment data through the report end date.
+2. Confirm the reporting period and source.
+3. Validate category totals, TDSG subtotal, Rouge POB subtotal, and Week Total.
+4. Generate the report with the standardizer.
+5. Run `npm run check`.
+6. Review desktop and iPhone portrait/landscape layouts.
+7. Record discrepancies or follow-up items.
+8. Commit and push the reviewed update.
