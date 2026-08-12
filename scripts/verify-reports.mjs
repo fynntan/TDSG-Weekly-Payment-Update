@@ -85,6 +85,11 @@ for (const file of files) {
     [!/<th[^>]*>\s*Remarks\s*<\/th>/i.test(source), "must use Ex. rate, not Remarks"],
     [/<th[^>]*>\s*Ex\. rate\s*<\/th>/i.test(source), "must include the Ex. rate header"],
     [!requiresPaymentMode || /<th[^>]*>\s*Payment Mode\s*<\/th>/i.test(source), "must include the Payment Mode header"],
+    [
+      !requiresPaymentMode || /Payment Date\s*<\/th>\s*<th[^>]*>\s*Payment Mode\s*<\/th>\s*<th[^>]*>\s*Payee \/ Supplier/i.test(source),
+      "must place Payment Mode between Payment Date and Payee / Supplier",
+    ],
+    [!requiresPaymentMode || !/<b>\s*Petty Cash\b/i.test(source), "must not repeat Petty Cash in Payee / Supplier"],
     [/\.sort\(/.test(source), "must retain descending sorting"],
     [/overflow-x:\s*auto/.test(source), "must retain mobile table scrolling"],
   ];
@@ -98,7 +103,7 @@ for (const file of files) {
     (match) => Array.from(match[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)),
   )
     .filter((cells) => cells.length === 10)
-    .map((cells) => plainText(cells[8][1]));
+    .map((cells) => plainText(cells[3][1]));
   if (requiresPaymentMode && modes.some((mode) => !["OCBC", "Ecobank", "Cash", "Rouge POB"].includes(mode))) {
     failures.push(`${name}: payment mode must be OCBC, Ecobank, Cash, or Rouge POB`);
   }

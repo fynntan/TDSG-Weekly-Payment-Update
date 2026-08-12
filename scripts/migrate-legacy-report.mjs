@@ -65,13 +65,24 @@ function paymentMode(row, isRouge) {
 function normalizedPurpose(row) {
   const approvedDescriptions = {
     "TDSG/CHN-2026-37":
-      "Contract ZZTOP20260729 - Purchase Hardware And Accessories",
+      "Purchase Hardware and Accessories (ZZTOP20260729)",
     "TDSG/CHN-2026-38":
       "Purchase Cummins Engine Spare Parts (TJDH2026-TDSGS-005)",
     "TDSG/CHN-2026-39":
-      "Contract ZZTOP20260730 - Purchase General Materials",
+      "Purchase General Materials (ZZTOP20260730)",
+    "TDSG-2026-08-278": "Working Advance - July 2026",
+    "TDSG-2026-08-279": "Site Canteen Purchases - July 2026",
+    "TDSG-2026-08-280": "Kalil's Service Fee - August 2026",
+    "TDSG-2026-08-281":
+      "Container Freight - July 2026 (Winning Ocean WA2644 / WA2649)",
+    "TDSG-2026-08-283":
+      "Forwarding Fee - Cali - Wirtgen Spare Parts (BL HLCUHAM260530640)",
   };
   return approvedDescriptions[row.prf] || row.purpose;
+}
+
+function normalizedPayee(row) {
+  return row.payee.replace(/^Petty Cash\s*-\s*/i, "").trim();
 }
 
 function rowsFrom(tableHtml) {
@@ -105,12 +116,12 @@ function tableMarkup(rows, label, isRouge = false) {
                 <td>${index + 1}</td>
                 <td>${textCell(row.prf)}</td>
                 <td>${textCell(row.date)}</td>
-                <td><b>${textCell(row.payee)}</b></td>
+                <td>${paymentMode(row, isRouge)}</td>
+                <td><b>${textCell(normalizedPayee(row))}</b></td>
                 <td>${textCell(normalizedPurpose(row))}</td>
                 <td><span class="tag ${categoryClass(row.category)}">${textCell(row.category)}</span></td>
                 <td class="num">${textCell(row.gnf)}</td>
                 <td class="num">${textCell(row.usd)}</td>
-                <td>${paymentMode(row, isRouge)}</td>
                 <td>${textCell(row.rate)}</td>
               </tr>`,
     )
@@ -120,16 +131,15 @@ function tableMarkup(rows, label, isRouge = false) {
   return `          <table>
             <thead>
               <tr>
-                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th class="num">GNF</th><th class="num">USD</th><th>Payment Mode</th><th>Ex. rate</th>
+                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payment Mode</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th class="num">GNF</th><th class="num">USD</th><th>Ex. rate</th>
               </tr>
             </thead>
             <tbody>
 ${rowsHtml}
               <tr class="tot">
-                <td colspan="6">${label} subtotal &mdash; ${rows.length} ${plural}</td>
+                <td colspan="7">${label} subtotal &mdash; ${rows.length} ${plural}</td>
                 <td class="num">${format(totalGnf)}</td>
                 <td class="num">${format(totalUsd)}</td>
-                <td></td>
                 <td></td>
               </tr>
             </tbody>
