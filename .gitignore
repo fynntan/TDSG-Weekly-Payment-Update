@@ -6,6 +6,7 @@
 # Local Codex attachments and dependencies
 .codex-remote-attachments/
 node_modules/
+tmp/
 
 # Temporary and operating-system files
 *.tmp

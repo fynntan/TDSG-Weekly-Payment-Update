@@ -24,7 +24,7 @@ This repository is the working home and source of truth for TDSG weekly payment 
 - Keep credentials, access tokens, authentication codes, source workbooks, and personal contact details out of the repository.
 - Record the reporting period and source for every weekly payment update.
 - Reconcile each report only through its stated report end date.
-- Use `npm run report:standardize -- <input> [output]` for each new report so future reports follow the approved standard.
+- Use `npm run report:prepare -- <input> <reports/YYYY-MM/output>` for each new report so it receives the latest templates and passes the repository checks.
 - Run `npm run check` and complete desktop plus iPhone portrait/landscape review before committing.
 - Update the templates, automated checks, README, and this memory together when requirements change.
 
@@ -33,7 +33,7 @@ This repository is the working home and source of truth for TDSG weekly payment 
 1. Add or refresh the source payment data through the report end date.
 2. Confirm the reporting period and source.
 3. Validate category totals, TDSG subtotal, Rouge POB subtotal, and Week Total.
-4. Generate the report with the standardizer.
+4. Generate and validate the report with `npm run report:prepare -- <input> <output>`.
 5. Run `npm run check`.
 6. Review desktop and iPhone portrait/landscape layouts.
 7. Record discrepancies or follow-up items.

@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "report:prepare": "node scripts/prepare-report.mjs",
     "report:standardize": "node scripts/standardize-report.mjs",
     "report:migrate-legacy": "node scripts/migrate-legacy-report.mjs",
     "check": "node scripts/verify-reports.mjs",

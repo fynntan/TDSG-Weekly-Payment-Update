@@ -4,20 +4,14 @@ This repository contains the reviewed weekly payment reports and the reusable pr
 
 ## Create the next weekly report
 
-1. Prepare the new report HTML using the same semantic classes and table structure as the latest report in `reports/`.
-2. Standardize it from the repository root:
+1. Prepare the new report HTML from the approved payment source documents.
+2. From the repository root, run the single preparation command:
 
    ```powershell
-   npm run report:standardize -- "path\to\input-report.html" "reports\YYYY-MM\output-report.html"
+   npm run report:prepare -- "path\to\input-report.html" "reports\YYYY-MM\output-report.html"
    ```
 
-   The output path is optional. If omitted, the input file is standardized in place.
-
-   Reports created with the older Google-font/navigation format must first be migrated:
-
-   ```powershell
-   npm run report:migrate-legacy -- "path\to\old-report.html" "reports\YYYY-MM\output-report.html"
-   ```
+   This detects the old or current report format, applies the latest shared templates, saves the result below `reports/`, and runs all automated checks. Do not copy an earlier report's embedded CSS or JavaScript manually.
 
 3. Run the automated checks:
 
@@ -57,7 +51,8 @@ The builder has no third-party dependencies. Node.js is the only requirement.
 
 - `templates/report.css` controls the visual and responsive standard.
 - `templates/report.js` controls exchange-rate display and descending sorting.
+- `scripts/prepare-report.mjs` is the required entry point for each new report; it detects the input format, applies the current templates, and verifies the repository.
 - `scripts/standardize-report.mjs` applies both templates to a report.
-- `scripts/verify-reports.mjs` checks structure, security, mobile scrolling, labels, and total reconciliation.
+- `scripts/verify-reports.mjs` checks structure, security, mobile scrolling, labels, total reconciliation, and exact agreement with both shared templates.
 
 Change the templates and checks together when the approved report standard changes. Do not hand-edit a generated report without updating the reusable source of truth.

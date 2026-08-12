@@ -5,6 +5,25 @@ import { fileURLToPath } from "node:url";
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const reportsRoot = path.join(repositoryRoot, "reports");
 const failures = [];
+const expectedStylesheet = fs
+  .readFileSync(path.join(repositoryRoot, "templates", "report.css"), "utf8")
+  .trim();
+const expectedBehavior = fs
+  .readFileSync(path.join(repositoryRoot, "templates", "report.js"), "utf8")
+  .trim();
+
+function embeddedAsset(source, tagName) {
+  const match = new RegExp(`<${tagName}\\b[^>]*>([\\s\\S]*?)<\\/${tagName}>`, "i")
+    .exec(source);
+  if (!match) return null;
+
+  const lines = match[1].replace(/^\r?\n|\r?\n\s*$/g, "").split(/\r?\n/);
+  const nonEmptyLines = lines.filter((line) => line.trim());
+  const indent = nonEmptyLines.length
+    ? Math.min(...nonEmptyLines.map((line) => line.match(/^\s*/)[0].length))
+    : 0;
+  return lines.map((line) => line.slice(Math.min(indent, line.length))).join("\n").trim();
+}
 
 function reportFiles(directory) {
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -97,9 +116,13 @@ for (const file of files) {
   const source = fs.readFileSync(file, "utf8");
   const name = path.relative(repositoryRoot, file);
   const requiresPaymentMode = !/[\\/]2026-07[\\/]/.test(name);
+  const embeddedStylesheet = embeddedAsset(source, "style");
+  const embeddedBehavior = embeddedAsset(source, "script");
   const checks = [
     [count(source, /<style\b/gi) === 1, "must contain exactly one stylesheet"],
     [count(source, /<script\b/gi) === 1, "must contain exactly one script"],
+    [embeddedStylesheet === expectedStylesheet, "embedded stylesheet must match templates/report.css; regenerate the report"],
+    [embeddedBehavior === expectedBehavior, "embedded behavior must match templates/report.js; regenerate the report"],
     [/Content-Security-Policy/i.test(source), "must include a Content Security Policy"],
     [/src=["']data:image\/png;base64,/i.test(source), "must embed the logo"],
     [/TOP DEVELOPMENT SERVICES GUINEA SARLU/.test(source), "must show the full company name"],
