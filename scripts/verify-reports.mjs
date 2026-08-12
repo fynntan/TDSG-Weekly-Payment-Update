@@ -42,7 +42,11 @@ function tableSubtotal(source, label) {
   ).exec(source);
   if (!row) return null;
   const cells = Array.from(row[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi));
-  return cells.length >= 3 ? amount(plainText(cells[cells.length - 2][1])) : null;
+  const numericValues = cells
+    .slice(1)
+    .map((cell) => plainText(cell[1]))
+    .filter((value) => /\d/.test(value));
+  return numericValues.length ? amount(numericValues[numericValues.length - 1]) : null;
 }
 
 function summaryAmount(source, className) {
@@ -69,6 +73,7 @@ if (files.length === 0) {
 for (const file of files) {
   const source = fs.readFileSync(file, "utf8");
   const name = path.relative(repositoryRoot, file);
+  const requiresPaymentMode = !/[\\/]2026-07[\\/]/.test(name);
   const checks = [
     [count(source, /<style\b/gi) === 1, "must contain exactly one stylesheet"],
     [count(source, /<script\b/gi) === 1, "must contain exactly one script"],
@@ -79,6 +84,7 @@ for (const file of files) {
     [!/<link\b[^>]*href=/i.test(source), "must not load external styles or fonts"],
     [!/<th[^>]*>\s*Remarks\s*<\/th>/i.test(source), "must use Ex. rate, not Remarks"],
     [/<th[^>]*>\s*Ex\. rate\s*<\/th>/i.test(source), "must include the Ex. rate header"],
+    [!requiresPaymentMode || /<th[^>]*>\s*Payment Mode\s*<\/th>/i.test(source), "must include the Payment Mode header"],
     [/\.sort\(/.test(source), "must retain descending sorting"],
     [/overflow-x:\s*auto/.test(source), "must retain mobile table scrolling"],
   ];
@@ -86,6 +92,16 @@ for (const file of files) {
   checks.forEach(([passed, message]) => {
     if (!passed) failures.push(`${name}: ${message}`);
   });
+
+  const modes = Array.from(
+    source.matchAll(/<tr>([\s\S]*?)<\/tr>/gi),
+    (match) => Array.from(match[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)),
+  )
+    .filter((cells) => cells.length === 10)
+    .map((cells) => plainText(cells[8][1]));
+  if (requiresPaymentMode && modes.some((mode) => !["OCBC", "Ecobank", "Cash", "Rouge POB"].includes(mode))) {
+    failures.push(`${name}: payment mode must be OCBC, Ecobank, Cash, or Rouge POB`);
+  }
 
   const tdsgSummary = summaryAmount(source, "summary-total");
   const rougeSummary = summaryAmount(source, "rouge-total");

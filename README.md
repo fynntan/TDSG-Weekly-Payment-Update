@@ -39,10 +39,12 @@ The builder has no third-party dependencies. Node.js is the only requirement.
 - The embedded TOP emblem and full company name share one compact, vertically centered header.
 - No navigation bar; the report is short enough to read as one page.
 - Tables use identical column widths and horizontal scrolling on narrow screens, so no data is hidden.
+- The `Payment Mode` column uses `OCBC`, `Ecobank`, or `Cash`; payments made on behalf by Rouge use `Rouge POB`.
 - Table content is vertically centered. Ordinary payees, categories, and amounts use regular weight; headings and total rows are bold.
 - Category pills retain distinct colors through the classes `staff`, `site`, `office`, `comm`, `parts`, `log`, and `ga`.
 - Summary categories and detail rows display from highest to lowest USD amount. Subtotals remain at the bottom.
 - The exchange-rate column is titled `Ex. rate`; values display as `1 : 8745`, while USD/EUR-only payments display an em dash.
+- Purchase descriptions follow one of two consistent patterns: `Contract [number] - Purchase [item]` or `Purchase [item] ([contract/reference])`.
 - TDSG subtotal, Rouge POB subtotal, and Week Total must all be present and reconcile.
 - Every report is standalone: the logo, stylesheet, and behavior are embedded. External fonts and network resources are not used.
 - A restrictive Content Security Policy permits only the embedded image, style, and script required by the report.

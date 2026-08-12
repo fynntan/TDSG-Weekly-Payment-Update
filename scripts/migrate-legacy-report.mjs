@@ -55,6 +55,25 @@ function categoryClass(category) {
   return "ga";
 }
 
+function paymentMode(row, isRouge) {
+  if (isRouge) return "Rouge POB";
+  if (/TDSG[\/-]CHN-/i.test(row.prf)) return "OCBC";
+  if (/^Petty Cash\b/i.test(row.payee)) return "Cash";
+  return "Ecobank";
+}
+
+function normalizedPurpose(row) {
+  const approvedDescriptions = {
+    "TDSG/CHN-2026-37":
+      "Contract ZZTOP20260729 - Purchase Hardware And Accessories",
+    "TDSG/CHN-2026-38":
+      "Purchase Cummins Engine Spare Parts (TJDH2026-TDSGS-005)",
+    "TDSG/CHN-2026-39":
+      "Contract ZZTOP20260730 - Purchase General Materials",
+  };
+  return approvedDescriptions[row.prf] || row.purpose;
+}
+
 function rowsFrom(tableHtml) {
   return Array.from(tableHtml.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi))
     .map((match) => match[1])
@@ -77,7 +96,7 @@ function rowsFrom(tableHtml) {
     }));
 }
 
-function tableMarkup(rows, label) {
+function tableMarkup(rows, label, isRouge = false) {
   const totalGnf = rows.reduce((sum, row) => sum + number(row.gnf), 0);
   const totalUsd = rows.reduce((sum, row) => sum + number(row.usd), 0);
   const rowsHtml = rows
@@ -87,10 +106,11 @@ function tableMarkup(rows, label) {
                 <td>${textCell(row.prf)}</td>
                 <td>${textCell(row.date)}</td>
                 <td><b>${textCell(row.payee)}</b></td>
-                <td>${textCell(row.purpose)}</td>
+                <td>${textCell(normalizedPurpose(row))}</td>
                 <td><span class="tag ${categoryClass(row.category)}">${textCell(row.category)}</span></td>
                 <td class="num">${textCell(row.gnf)}</td>
                 <td class="num">${textCell(row.usd)}</td>
+                <td>${paymentMode(row, isRouge)}</td>
                 <td>${textCell(row.rate)}</td>
               </tr>`,
     )
@@ -100,7 +120,7 @@ function tableMarkup(rows, label) {
   return `          <table>
             <thead>
               <tr>
-                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th class="num">GNF</th><th class="num">USD</th><th>Ex. rate</th>
+                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th class="num">GNF</th><th class="num">USD</th><th>Payment Mode</th><th>Ex. rate</th>
               </tr>
             </thead>
             <tbody>
@@ -109,6 +129,7 @@ ${rowsHtml}
                 <td colspan="6">${label} subtotal &mdash; ${rows.length} ${plural}</td>
                 <td class="num">${format(totalGnf)}</td>
                 <td class="num">${format(totalUsd)}</td>
+                <td></td>
                 <td></td>
               </tr>
             </tbody>
@@ -187,7 +208,7 @@ ${tableMarkup(tdsgRows, "TDSG")}
         </div>
         <h2>Payment on behalf by Rouge</h2>
         <div class="tw r">
-${tableMarkup(rougeRows, "Rouge POB")}
+${tableMarkup(rougeRows, "Rouge POB", true)}
         </div>
       </section>
       <footer>Weekly Payment Report &middot; Week ${escapeHtml(week)}, ${escapeHtml(reportDate)} &middot; Prepared by Finance Department. GNF&rarr;USD at the BCRG rate for each payment date; USD/EUR payments carry no GNF/rate.</footer>
