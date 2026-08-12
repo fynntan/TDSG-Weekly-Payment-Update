@@ -4,7 +4,7 @@ This repository contains the reviewed weekly payment reports and the reusable pr
 
 ## Create the next weekly report
 
-1. Prepare the new report HTML from the approved payment source documents.
+1. Prepare the new report HTML from the approved payment source documents listed under **Source documents and folders** below. Do not derive the transaction list only from an earlier HTML report.
 2. From the repository root, run the single preparation command:
 
    ```powershell
@@ -26,6 +26,27 @@ This repository contains the reviewed weekly payment reports and the reusable pr
    For a local preview, run `npm run preview` and open the report under `http://127.0.0.1:8765/reports/`.
 
 The builder has no third-party dependencies. Node.js is the only requirement.
+
+## Source documents and folders
+
+Use these OneDrive folders as the source of truth:
+
+- Weekly payment list and completed report: `C:\Users\VenusTham\OneDrive - Top International Holding Pte Ltd\Finance\20. Top Development Services Guinea - TDSG\Weekly Payment Approval Lists\YYYY\MM.MMMYYYY`
+- China PRFs and supporting documents: `C:\Users\VenusTham\OneDrive - Top International Holding Pte Ltd\Finance\20. Top Development Services Guinea - TDSG\Payment Request\TDSG CHINA\YYYY\[PRF folder]`
+- Guinea PRFs and supporting documents: `C:\Users\VenusTham\OneDrive - Top International Holding Pte Ltd\Finance\20. Top Development Services Guinea - TDSG\Payment Request\TDSG GUINEA\YYYY\MM.MMMYYYY\[PRF folder]`
+
+For each report week:
+
+1. Use the weekly payment Excel file as the starting list, then inspect the matching PRF folder and every relevant attachment or remittance. The report can contain transactions or supplier details that are not fully described in the weekly Excel file.
+2. Include only payments whose payment date falls on or before the report end date. Do not use documents dated after the report end date to extend the reconciliation.
+3. Take the payment mode from the PRF and remittance evidence: `OCBC`, `Ecobank`, `Cash`/`Petty Cash - [custodian]`, or `Rouge POB`, as applicable.
+4. Use the actual supplier or ultimate payee shown by the invoice, contract, bill of lading, receipt, or remittance. Do not use the petty-cash custodian as the supplier when the underlying supplier can be identified.
+5. When one remittance settles multiple invoices, show the correct supplier and supporting invoice/contract references and reconcile the remittance to the combined invoices.
+6. Use a concise purpose followed by the contract, invoice, BL, or other reference in parentheses when available.
+7. Record the original transaction currency and amount, USD reporting amount, payment-date BCRG exchange rate for GNF payments, and the correct category.
+8. Reconcile every detail row to its PRF/supporting documents, then reconcile the TDSG subtotal, Rouge POB subtotal, category summary, and Week Total.
+
+If the weekly Excel file conflicts with the approved PRF, invoice, or remittance, investigate the difference and use the underlying approved supporting evidence; do not silently copy the Excel description.
 
 ## Locked report standard
 

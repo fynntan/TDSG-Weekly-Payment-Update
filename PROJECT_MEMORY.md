@@ -22,7 +22,8 @@ This repository is the working home and source of truth for TDSG weekly payment 
 ## Working conventions
 
 - Keep credentials, access tokens, authentication codes, source workbooks, and personal contact details out of the repository.
-- Record the reporting period and source for every weekly payment update.
+- Start from the matching Excel file under `Weekly Payment Approval Lists\YYYY\MM.MMMYYYY`, then verify every transaction against the corresponding China or Guinea PRF folder under `Payment Request` and its invoices, contracts, receipts, bills of lading, and remittances.
+- Record the reporting period and source for every weekly payment update. The approved PRF and supporting/remittance evidence control when the weekly Excel is incomplete or less specific.
 - Reconcile each report only through its stated report end date.
 - Use `npm run report:prepare -- <input> <reports/YYYY-MM/output>` for each new report so it receives the latest templates and passes the repository checks.
 - Run `npm run check` and complete desktop plus iPhone portrait/landscape review before committing.
