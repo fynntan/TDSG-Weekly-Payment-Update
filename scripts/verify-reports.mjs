@@ -104,8 +104,15 @@ for (const file of files) {
   )
     .filter((cells) => cells.length === 10)
     .map((cells) => plainText(cells[3][1]));
-  if (requiresPaymentMode && modes.some((mode) => !["OCBC", "Ecobank", "Cash", "Rouge POB"].includes(mode))) {
-    failures.push(`${name}: payment mode must be OCBC, Ecobank, Cash, or Rouge POB`);
+  if (
+    requiresPaymentMode &&
+    modes.some(
+      (mode) =>
+        !["OCBC", "Ecobank", "Rouge POB"].includes(mode) &&
+        !/^Petty Cash - \S.+/.test(mode),
+    )
+  ) {
+    failures.push(`${name}: payment mode must identify OCBC, Ecobank, Rouge POB, or the petty-cash custodian`);
   }
 
   const tdsgSummary = summaryAmount(source, "summary-total");

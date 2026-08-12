@@ -39,13 +39,13 @@ The builder has no third-party dependencies. Node.js is the only requirement.
 - The embedded TOP emblem and full company name share one compact, vertically centered header.
 - No navigation bar; the report is short enough to read as one page.
 - Tables use identical column widths and horizontal scrolling on narrow screens, so no data is hidden.
-- The `Payment Mode` column follows `Payment Date` and uses `OCBC`, `Ecobank`, or `Cash`; payments made on behalf by Rouge use `Rouge POB`.
+- The `Payment Mode` column follows `Payment Date` and uses `OCBC`, `Ecobank`, `Petty Cash - [custodian]`, or `Rouge POB`.
 - Table content is vertically centered. Ordinary payees, categories, and amounts use regular weight; headings and total rows are bold.
 - Category pills retain distinct colors through the classes `staff`, `site`, `office`, `comm`, `parts`, `log`, and `ga`.
 - Summary categories and detail rows display from highest to lowest USD amount. Subtotals remain at the bottom.
 - The exchange-rate column is titled `Ex. rate`; values display as `1 : 8745`, while USD/EUR-only payments display an em dash.
 - Purposes use a concise description followed by the contract, invoice, BL, or other reference in parentheses when available: `Purchase [item] ([reference])`.
-- For cash payments, `Payee / Supplier` contains only the recipient or supplier name; it does not repeat `Petty Cash`.
+- `Payee / Supplier` shows the actual recipient or supplier. For petty-cash payments, the staff custodian belongs in `Payment Mode`, not in the supplier field; use `Various [type] Suppliers` when one PRF consolidates multiple vendors.
 - TDSG subtotal, Rouge POB subtotal, and Week Total must all be present and reconcile.
 - Every report is standalone: the logo, stylesheet, and behavior are embedded. External fonts and network resources are not used.
 - A restrictive Content Security Policy permits only the embedded image, style, and script required by the report.

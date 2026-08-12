@@ -58,7 +58,8 @@ function categoryClass(category) {
 function paymentMode(row, isRouge) {
   if (isRouge) return "Rouge POB";
   if (/TDSG[\/-]CHN-/i.test(row.prf)) return "OCBC";
-  if (/^Petty Cash\b/i.test(row.payee)) return "Cash";
+  const custodian = row.payee.match(/^Petty Cash\s*-\s*(.+)$/i)?.[1]?.trim();
+  if (custodian) return `Petty Cash - ${custodian}`;
   return "Ecobank";
 }
 
@@ -82,6 +83,14 @@ function normalizedPurpose(row) {
 }
 
 function normalizedPayee(row) {
+  const approvedPayees = {
+    "TDSG-2026-08-278": "Various Site Suppliers",
+    "TDSG-2026-08-279": "Various Canteen Suppliers",
+    "TDSG-2026-08-280": "Kalil",
+    "TDSG-2026-08-281": "Aliou Bah",
+    "TDSG-2026-08-283": "Cali",
+  };
+  if (approvedPayees[row.prf]) return approvedPayees[row.prf];
   return row.payee.replace(/^Petty Cash\s*-\s*/i, "").trim();
 }
 
