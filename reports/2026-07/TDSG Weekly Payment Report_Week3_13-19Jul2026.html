@@ -183,7 +183,7 @@
 
             table {
               width: 100%;
-              min-width: 960px;
+              min-width: 1160px;
               border-collapse: collapse;
               table-layout: fixed;
               font-family: Arial, Helvetica, sans-serif;
@@ -231,9 +231,17 @@
               font-variant-numeric: tabular-nums;
             }
 
+            tbody tr:not(.tot) td:nth-child(8),
+            tbody tr:not(.tot) td:nth-child(9) {
+              text-align: right;
+              white-space: nowrap;
+              font-variant-numeric: tabular-nums;
+            }
+
             .tot td {
               border-top: 2px solid var(--navy);
-              background: #f1ede5;
+              background: #dfe8f2;
+              color: var(--navy);
               font-weight: 700;
             }
 
@@ -242,34 +250,38 @@
             }
 
             th:nth-child(2) {
-              width: 12%;
+              width: 11%;
             }
 
             th:nth-child(3) {
-              width: 10%;
-            }
-
-            th:nth-child(4) {
-              width: 14%;
-            }
-
-            th:nth-child(5) {
-              width: 22%;
-            }
-
-            th:nth-child(6) {
-              width: 15%;
-            }
-
-            th:nth-child(7) {
               width: 9%;
             }
 
+            th:nth-child(4) {
+              width: 9%;
+            }
+
+            th:nth-child(5) {
+              width: 13%;
+            }
+
+            th:nth-child(6) {
+              width: 18%;
+            }
+
+            th:nth-child(7) {
+              width: 12%;
+            }
+
             th:nth-child(8) {
-              width: 7%;
+              width: 10%;
             }
 
             th:nth-child(9) {
+              width: 7%;
+            }
+
+            th:nth-child(10) {
               width: 7%;
             }
 
@@ -588,8 +600,8 @@
 
                 rows
                   .sort(function (a, b) {
-                    return numberFrom(b.cells[7].textContent) -
-                      numberFrom(a.cells[7].textContent);
+                    return numberFrom(b.cells[8].textContent) -
+                      numberFrom(a.cells[8].textContent);
                   })
                   .forEach(function (row, index) {
                     row.cells[0].textContent = String(index + 1);

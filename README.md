@@ -45,6 +45,7 @@ The builder has no third-party dependencies. Node.js is the only requirement.
 - Summary categories and detail rows display from highest to lowest USD amount. Subtotals remain at the bottom.
 - The exchange-rate column is titled `Ex. Rate`; values display as `1 : 8745`, while USD/EUR-only payments display an em dash.
 - All table headers are left-aligned. `Original Currency` and `USD` values are right-aligned with tabular numerals for consistent decimal-position alignment. Original Currency is not totalled; USD remains the common reporting amount and subtotal.
+- Detail tables reserve wider, separate columns for `Original Currency`, `USD`, and `Ex. Rate` so their headers and values never overlap.
 - The footer states only that GNF payments are converted to USD using the applicable payment-date BCRG rate.
 - Purposes use a concise description followed by the contract, invoice, BL, or other reference in parentheses when available: `Purchase [item] ([reference])`.
 - `Payee / Supplier` shows the actual recipient or supplier. For petty-cash payments, the staff custodian belongs in `Payment Mode`, not in the supplier field; use `Various [type] Suppliers` when one PRF consolidates multiple vendors.

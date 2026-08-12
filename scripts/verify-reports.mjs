@@ -113,6 +113,7 @@ for (const file of files) {
     [/<th>\s*Original Currency\s*<\/th>/.test(source), "Original Currency header must follow the left-aligned text headers"],
     [!/<th\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>/i.test(source), "all table headers must be left-aligned"],
     [/font-variant-numeric:\s*tabular-nums/.test(source), "numeric values must retain decimal-position alignment"],
+    [/td:nth-child\(8\)[\s\S]*td:nth-child\(9\)[\s\S]*text-align:\s*right/.test(source), "Original Currency and USD columns must be explicitly right-aligned"],
     [/GNF payments are converted to USD using the BCRG rate applicable on each payment date\./.test(source), "footer must state the GNF conversion basis"],
     [!/Original-currency amounts are shown in the detail table/.test(source), "footer must remain concise"],
     [!/USD payments retain their original amount/.test(source), "footer must remain concise"],
