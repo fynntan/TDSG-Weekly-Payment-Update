@@ -119,7 +119,14 @@ function rowsFrom(tableHtml) {
 function tableMarkup(rows, label, isRouge = false) {
   const totalGnf = rows.reduce((sum, row) => sum + number(row.gnf), 0);
   const totalUsd = rows.reduce((sum, row) => sum + number(row.usd), 0);
-  const rowsHtml = rows
+  const sortedRows = rows
+    .map((row, sourceIndex) => ({ row, sourceIndex }))
+    .sort((left, right) =>
+      number(right.row.usd) - number(left.row.usd) ||
+      left.sourceIndex - right.sourceIndex,
+    )
+    .map(({ row }) => row);
+  const rowsHtml = sortedRows
     .map(
       (row, index) => `              <tr>
                 <td>${index + 1}</td>
@@ -135,7 +142,7 @@ function tableMarkup(rows, label, isRouge = false) {
               </tr>`,
     )
     .join("\n");
-  const plural = rows.length === 1 ? "payment" : "payments";
+  const plural = sortedRows.length === 1 ? "payment" : "payments";
 
   return `          <table>
             <thead>
@@ -146,7 +153,7 @@ function tableMarkup(rows, label, isRouge = false) {
             <tbody>
 ${rowsHtml}
               <tr class="tot">
-                <td colspan="7">${label} subtotal &mdash; ${rows.length} ${plural}</td>
+                <td colspan="7">${label} subtotal &mdash; ${sortedRows.length} ${plural}</td>
                 <td class="num">${format(totalGnf)}</td>
                 <td class="num">${format(totalUsd)}</td>
                 <td></td>

@@ -58,6 +58,20 @@ function summaryAmount(source, className) {
   return value ? amount(plainText(value[1])) : null;
 }
 
+function detailTablesAreUsdDescending(source) {
+  return Array.from(source.matchAll(/<tbody>([\s\S]*?)<\/tbody>/gi)).every(
+    (tbody) => {
+      const usdValues = Array.from(
+        tbody[1].matchAll(/<tr(?![^>]*class=["'][^"']*tot)(?:\s[^>]*)?>([\s\S]*?)<\/tr>/gi),
+        (row) => Array.from(row[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)),
+      )
+        .filter((cells) => cells.length === 10)
+        .map((cells) => amount(plainText(cells[8][1])));
+      return usdValues.every((value, index) => index === 0 || usdValues[index - 1] >= value);
+    },
+  );
+}
+
 if (!fs.existsSync(reportsRoot)) {
   console.error("No reports directory found.");
   process.exit(1);
@@ -91,6 +105,7 @@ for (const file of files) {
     ],
     [!requiresPaymentMode || !/<b>\s*Petty Cash\b/i.test(source), "must not repeat Petty Cash in Payee / Supplier"],
     [/\.sort\(/.test(source), "must retain descending sorting"],
+    [!requiresPaymentMode || detailTablesAreUsdDescending(source), "detail tables must be stored in descending USD order"],
     [/overflow-x:\s*auto/.test(source), "must retain mobile table scrolling"],
   ];
 

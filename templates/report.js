@@ -28,8 +28,8 @@
 
           rows
             .sort(function (a, b) {
-              return numberFrom(b.cells[7].textContent) -
-                numberFrom(a.cells[7].textContent);
+              return numberFrom(b.cells[8].textContent) -
+                numberFrom(a.cells[8].textContent);
             })
             .forEach(function (row, index) {
               row.cells[0].textContent = String(index + 1);
