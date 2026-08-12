@@ -77,7 +77,7 @@ function normalizedPurpose(row) {
     "TDSG-2026-08-281":
       "Container Freight - July 2026 (Winning Ocean WA2644 / WA2649)",
     "TDSG-2026-08-283":
-      "Forwarding Fee - Cali - Wirtgen Spare Parts (BL HLCUHAM260530640)",
+      "Port, Shipping, Container and Demurrage Charges - Wirtgen Spare Parts (BL HLCUHAM260530640)",
   };
   return approvedDescriptions[row.prf] || row.purpose;
 }
@@ -88,7 +88,8 @@ function normalizedPayee(row) {
     "TDSG-2026-08-279": "Various Canteen Suppliers",
     "TDSG-2026-08-280": "Kalil",
     "TDSG-2026-08-281": "Aliou Bah",
-    "TDSG-2026-08-283": "Cali",
+    "TDSG-2026-08-283":
+      "Conakry Terminal / West Africa Container Agency - Guinea",
   };
   if (approvedPayees[row.prf]) return approvedPayees[row.prf];
   return row.payee.replace(/^Petty Cash\s*-\s*/i, "").trim();
@@ -147,7 +148,7 @@ function tableMarkup(rows, label, isRouge = false) {
   return `          <table>
             <thead>
               <tr>
-                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payment Mode</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th class="num">GNF</th><th class="num">USD</th><th>Ex. rate</th>
+                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payment Mode</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th class="num">GNF</th><th class="num">USD</th><th>Ex. Rate</th>
               </tr>
             </thead>
             <tbody>

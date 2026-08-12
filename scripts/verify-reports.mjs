@@ -96,14 +96,19 @@ for (const file of files) {
     [/TOP DEVELOPMENT SERVICES GUINEA SARLU/.test(source), "must show the full company name"],
     [!/<nav\b/i.test(source), "must not include report navigation"],
     [!/<link\b[^>]*href=/i.test(source), "must not load external styles or fonts"],
-    [!/<th[^>]*>\s*Remarks\s*<\/th>/i.test(source), "must use Ex. rate, not Remarks"],
-    [/<th[^>]*>\s*Ex\. rate\s*<\/th>/i.test(source), "must include the Ex. rate header"],
+    [!/<th[^>]*>\s*Remarks\s*<\/th>/i.test(source), "must use Ex. Rate, not Remarks"],
+    [/<th[^>]*>\s*Ex\. Rate\s*<\/th>/.test(source), "must include the exact Ex. Rate header"],
     [!requiresPaymentMode || /<th[^>]*>\s*Payment Mode\s*<\/th>/i.test(source), "must include the Payment Mode header"],
     [
       !requiresPaymentMode || /Payment Date\s*<\/th>\s*<th[^>]*>\s*Payment Mode\s*<\/th>\s*<th[^>]*>\s*Payee \/ Supplier/i.test(source),
       "must place Payment Mode between Payment Date and Payee / Supplier",
     ],
     [!requiresPaymentMode || !/<b>\s*Petty Cash\b/i.test(source), "must not repeat Petty Cash in Payee / Supplier"],
+    [
+      !/TDSG-2026-08-283/.test(source) ||
+        /Conakry Terminal \/ West Africa Container Agency - Guinea/.test(source),
+      "PRF 283 must identify its actual logistics suppliers",
+    ],
     [/\.sort\(/.test(source), "must retain descending sorting"],
     [!requiresPaymentMode || detailTablesAreUsdDescending(source), "detail tables must be stored in descending USD order"],
     [/overflow-x:\s*auto/.test(source), "must retain mobile table scrolling"],
