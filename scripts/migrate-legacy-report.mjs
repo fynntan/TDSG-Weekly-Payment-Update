@@ -153,7 +153,7 @@ function tableMarkup(rows, label, isRouge = false) {
   return `          <table>
             <thead>
               <tr>
-                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payment Mode</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th>Original Currency</th><th class="num">USD</th><th>Ex. Rate</th>
+                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payment Mode</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th>Original Currency</th><th>USD</th><th>Ex. Rate</th>
               </tr>
             </thead>
             <tbody>
@@ -243,7 +243,7 @@ ${tableMarkup(tdsgRows, "TDSG")}
 ${tableMarkup(rougeRows, "Rouge POB", true)}
         </div>
       </section>
-      <footer>Weekly Payment Report &middot; Week ${escapeHtml(week)}, ${escapeHtml(reportDate)} &middot; Prepared by Finance Department. GNF&rarr;USD at the BCRG rate for each payment date; USD/EUR payments carry no GNF/rate.</footer>
+      <footer>Weekly Payment Report &middot; Week ${escapeHtml(week)} &middot; ${escapeHtml(reportDate)} &middot; Prepared by Finance Department. GNF payments are converted to USD using the BCRG rate applicable on each payment date.</footer>
     </main>
     <script>
 ${behavior.split("\n").map((line) => (line.trim() ? `      ${line.trimEnd()}` : "")).join("\n")}

@@ -57,6 +57,16 @@ for (const file of files) {
   let source = fs.readFileSync(resolved, "utf8");
   source = source.replace(/(<th\b[^>]*>)\s*GNF\s*(<\/th>)/g, "$1Original Currency$2");
   source = source.replace(/<th\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>\s*Original Currency\s*<\/th>/g, "<th>Original Currency</th>");
+  source = source.replace(/<th\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>\s*USD\s*<\/th>/g, "<th>USD</th>");
+  source = source.replace(/Week (\d+),\s*/g, "Week $1 &middot; ");
+  source = source.replace(
+    /Prepared by Finance Department\.\s*GNF&rarr;USD at the BCRG rate\s*for each\s*payment date; USD\/EUR payments carry no GNF\/rate\./g,
+    "Prepared by Finance Department. GNF payments are converted to USD using the BCRG rate applicable on each payment date.",
+  );
+  source = source.replace(
+    /Prepared by Finance Department\. Original-currency amounts are shown in the detail table\. GNF payments are converted to USD using the BCRG rate applicable on each payment date; USD payments retain their original amount\./g,
+    "Prepared by Finance Department. GNF payments are converted to USD using the BCRG rate applicable on each payment date.",
+  );
   source = source.replace(/<tbody>([\s\S]*?)<\/tbody>/gi, (match, tbody) =>
     match.replace(tbody, standardizeTable(tbody)),
   );

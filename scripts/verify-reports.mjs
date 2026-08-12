@@ -111,6 +111,12 @@ for (const file of files) {
     [!/<th[^>]*>\s*GNF\s*<\/th>/.test(source), "must not label mixed original-currency values as GNF"],
     [originalCurrencySubtotalsAreBlank(source), "must not total Original Currency"],
     [/<th>\s*Original Currency\s*<\/th>/.test(source), "Original Currency header must follow the left-aligned text headers"],
+    [!/<th\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>/i.test(source), "all table headers must be left-aligned"],
+    [/font-variant-numeric:\s*tabular-nums/.test(source), "numeric values must retain decimal-position alignment"],
+    [/GNF payments are converted to USD using the BCRG rate applicable on each payment date\./.test(source), "footer must state the GNF conversion basis"],
+    [!/Original-currency amounts are shown in the detail table/.test(source), "footer must remain concise"],
+    [!/USD payments retain their original amount/.test(source), "footer must remain concise"],
+    [!/USD\/EUR payments carry no GNF\/rate/.test(source), "footer must not retain the obsolete GNF/rate wording"],
     [!requiresPaymentMode || /<th[^>]*>\s*Payment Mode\s*<\/th>/i.test(source), "must include the Payment Mode header"],
     [
       !requiresPaymentMode || /Payment Date\s*<\/th>\s*<th[^>]*>\s*Payment Mode\s*<\/th>\s*<th[^>]*>\s*Payee \/ Supplier/i.test(source),
