@@ -158,7 +158,7 @@ const report = `<!doctype html>
     <meta name="color-scheme" content="light" />
     <title>TDSG Weekly Payment Report &mdash; Week ${escapeHtml(week)} &middot; ${escapeHtml(reportDate)}</title>
     <style>
-${css.split("\n").map((line) => `      ${line}`).join("\n")}
+${css.split("\n").map((line) => (line.trim() ? `      ${line.trimEnd()}` : "")).join("\n")}
     </style>
   </head>
   <body>
@@ -193,7 +193,7 @@ ${tableMarkup(rougeRows, "Rouge POB")}
       <footer>Weekly Payment Report &middot; Week ${escapeHtml(week)}, ${escapeHtml(reportDate)} &middot; Prepared by Finance Department. GNF&rarr;USD at the BCRG rate for each payment date; USD/EUR payments carry no GNF/rate.</footer>
     </main>
     <script>
-${behavior.split("\n").map((line) => `      ${line}`).join("\n")}
+${behavior.split("\n").map((line) => (line.trim() ? `      ${line.trimEnd()}` : "")).join("\n")}
     </script>
   </body>
 </html>
