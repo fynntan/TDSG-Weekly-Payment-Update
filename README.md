@@ -44,6 +44,7 @@ The builder has no third-party dependencies. Node.js is the only requirement.
 - Category pills retain distinct colors through the classes `staff`, `site`, `office`, `comm`, `parts`, `log`, and `ga`.
 - Summary categories and detail rows display from highest to lowest USD amount. Subtotals remain at the bottom.
 - The exchange-rate column is titled `Ex. Rate`; values display as `1 : 8745`, while USD/EUR-only payments display an em dash.
+- `Original Currency` shows the transaction currency and source amount, such as `GNF 35,144,000` or `USD 294,725`; `USD` remains the common reporting amount.
 - Purposes use a concise description followed by the contract, invoice, BL, or other reference in parentheses when available: `Purchase [item] ([reference])`.
 - `Payee / Supplier` shows the actual recipient or supplier. For petty-cash payments, the staff custodian belongs in `Payment Mode`, not in the supplier field; use `Various [type] Suppliers` when one PRF consolidates multiple vendors.
 - TDSG subtotal, Rouge POB subtotal, and Week Total must all be present and reconcile.

@@ -98,6 +98,8 @@ for (const file of files) {
     [!/<link\b[^>]*href=/i.test(source), "must not load external styles or fonts"],
     [!/<th[^>]*>\s*Remarks\s*<\/th>/i.test(source), "must use Ex. Rate, not Remarks"],
     [/<th[^>]*>\s*Ex\. Rate\s*<\/th>/.test(source), "must include the exact Ex. Rate header"],
+    [/<th[^>]*>\s*Original Currency\s*<\/th>/.test(source), "must include the Original Currency header"],
+    [!/<th[^>]*>\s*GNF\s*<\/th>/.test(source), "must not label mixed original-currency values as GNF"],
     [!requiresPaymentMode || /<th[^>]*>\s*Payment Mode\s*<\/th>/i.test(source), "must include the Payment Mode header"],
     [
       !requiresPaymentMode || /Payment Date\s*<\/th>\s*<th[^>]*>\s*Payment Mode\s*<\/th>\s*<th[^>]*>\s*Payee \/ Supplier/i.test(source),
@@ -133,6 +135,16 @@ for (const file of files) {
     )
   ) {
     failures.push(`${name}: payment mode must identify OCBC, Ecobank, Rouge POB, or the petty-cash custodian`);
+  }
+
+  const originalCurrencyCells = Array.from(
+    source.matchAll(/<tr>([\s\S]*?)<\/tr>/gi),
+    (match) => Array.from(match[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)),
+  )
+    .filter((cells) => cells.length === 9 || cells.length === 10)
+    .map((cells) => plainText(cells[cells.length - 3][1]));
+  if (originalCurrencyCells.some((value) => !/^(?:GNF|USD|EUR)\s+[\d,.]+$/.test(value))) {
+    failures.push(`${name}: every detail row must show its original currency code and amount`);
   }
 
   const tdsgSummary = summaryAmount(source, "summary-total");

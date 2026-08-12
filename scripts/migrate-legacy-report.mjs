@@ -95,6 +95,25 @@ function normalizedPayee(row) {
   return row.payee.replace(/^Petty Cash\s*-\s*/i, "").trim();
 }
 
+function originalCurrency(row) {
+  if (number(row.gnf)) return { code: "GNF", display: `GNF ${row.gnf}` };
+  const code = /EUR/i.test(row.rate) ? "EUR" : "USD";
+  return { code, display: `${code} ${row.usd}` };
+}
+
+function originalCurrencyTotal(rows) {
+  const totals = rows.reduce((result, row) => {
+    const original = originalCurrency(row);
+    const sourceValue = original.code === "GNF" ? row.gnf : row.usd;
+    result[original.code] = (result[original.code] || 0) + number(sourceValue);
+    return result;
+  }, {});
+  return ["GNF", "USD", "EUR"]
+    .filter((code) => totals[code])
+    .map((code) => `${code} ${format(totals[code])}`)
+    .join(" + ");
+}
+
 function rowsFrom(tableHtml) {
   return Array.from(tableHtml.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi))
     .map((match) => match[1])
@@ -118,7 +137,6 @@ function rowsFrom(tableHtml) {
 }
 
 function tableMarkup(rows, label, isRouge = false) {
-  const totalGnf = rows.reduce((sum, row) => sum + number(row.gnf), 0);
   const totalUsd = rows.reduce((sum, row) => sum + number(row.usd), 0);
   const sortedRows = rows
     .map((row, sourceIndex) => ({ row, sourceIndex }))
@@ -137,7 +155,7 @@ function tableMarkup(rows, label, isRouge = false) {
                 <td><b>${textCell(normalizedPayee(row))}</b></td>
                 <td>${textCell(normalizedPurpose(row))}</td>
                 <td><span class="tag ${categoryClass(row.category)}">${textCell(row.category)}</span></td>
-                <td class="num">${textCell(row.gnf)}</td>
+                <td class="num">${textCell(originalCurrency(row).display)}</td>
                 <td class="num">${textCell(row.usd)}</td>
                 <td>${textCell(row.rate)}</td>
               </tr>`,
@@ -148,14 +166,14 @@ function tableMarkup(rows, label, isRouge = false) {
   return `          <table>
             <thead>
               <tr>
-                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payment Mode</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th class="num">GNF</th><th class="num">USD</th><th>Ex. Rate</th>
+                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payment Mode</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th class="num">Original Currency</th><th class="num">USD</th><th>Ex. Rate</th>
               </tr>
             </thead>
             <tbody>
 ${rowsHtml}
               <tr class="tot">
                 <td colspan="7">${label} subtotal &mdash; ${sortedRows.length} ${plural}</td>
-                <td class="num">${format(totalGnf)}</td>
+                <td class="num">${originalCurrencyTotal(sortedRows)}</td>
                 <td class="num">${format(totalUsd)}</td>
                 <td></td>
               </tr>
