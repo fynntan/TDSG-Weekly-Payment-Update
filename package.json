@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "report:standardize": "node scripts/standardize-report.mjs",
+    "report:migrate-legacy": "node scripts/migrate-legacy-report.mjs",
     "check": "node scripts/verify-reports.mjs",
     "preview": "node scripts/serve-reports.mjs"
   }

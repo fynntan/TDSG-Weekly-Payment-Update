@@ -13,6 +13,12 @@ This repository contains the reviewed weekly payment reports and the reusable pr
 
    The output path is optional. If omitted, the input file is standardized in place.
 
+   Reports created with the older Google-font/navigation format must first be migrated:
+
+   ```powershell
+   npm run report:migrate-legacy -- "path\to\old-report.html" "reports\YYYY-MM\output-report.html"
+   ```
+
 3. Run the automated checks:
 
    ```powershell
