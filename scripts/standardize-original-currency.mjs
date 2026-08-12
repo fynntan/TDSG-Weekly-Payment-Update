@@ -15,10 +15,6 @@ function amount(value) {
   return Number(String(value).replace(/[^\d.-]/g, "")) || 0;
 }
 
-function format(value) {
-  return Math.round(value).toLocaleString("en-US");
-}
-
 function replaceCell(row, cell, value) {
   return row.slice(0, cell.index) +
     cell[0].replace(cell[1], value) +
@@ -26,16 +22,11 @@ function replaceCell(row, cell, value) {
 }
 
 function standardizeTable(tbody) {
-  const totals = {};
   return tbody.replace(/<tr\b([^>]*)>([\s\S]*?)<\/tr>/gi, (row, attributes, body) => {
     const cells = Array.from(body.matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi));
     if (/\btot\b/i.test(attributes)) {
       if (cells.length < 3) return row;
-      const display = ["GNF", "USD", "EUR"]
-        .filter((code) => totals[code])
-        .map((code) => `${code} ${format(totals[code])}`)
-        .join(" + ");
-      const updatedBody = replaceCell(body, cells[1], display);
+      const updatedBody = replaceCell(body, cells[1], "");
       return row.replace(body, updatedBody);
     }
     if (cells.length !== 9 && cells.length !== 10) return row;
@@ -50,7 +41,6 @@ function standardizeTable(tbody) {
     const code = existing?.[1]?.toUpperCase() ||
       (amount(originalText) ? "GNF" : /EUR/i.test(rateText) ? "EUR" : "USD");
     const sourceAmount = existing?.[2] || (code === "GNF" ? originalText : usdText);
-    totals[code] = (totals[code] || 0) + amount(sourceAmount);
     const updatedBody = replaceCell(body, originalCell, `${code} ${sourceAmount}`);
     return row.replace(body, updatedBody);
   });
@@ -66,6 +56,7 @@ for (const file of files) {
   const resolved = path.resolve(file);
   let source = fs.readFileSync(resolved, "utf8");
   source = source.replace(/(<th\b[^>]*>)\s*GNF\s*(<\/th>)/g, "$1Original Currency$2");
+  source = source.replace(/<th\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>\s*Original Currency\s*<\/th>/g, "<th>Original Currency</th>");
   source = source.replace(/<tbody>([\s\S]*?)<\/tbody>/gi, (match, tbody) =>
     match.replace(tbody, standardizeTable(tbody)),
   );

@@ -101,19 +101,6 @@ function originalCurrency(row) {
   return { code, display: `${code} ${row.usd}` };
 }
 
-function originalCurrencyTotal(rows) {
-  const totals = rows.reduce((result, row) => {
-    const original = originalCurrency(row);
-    const sourceValue = original.code === "GNF" ? row.gnf : row.usd;
-    result[original.code] = (result[original.code] || 0) + number(sourceValue);
-    return result;
-  }, {});
-  return ["GNF", "USD", "EUR"]
-    .filter((code) => totals[code])
-    .map((code) => `${code} ${format(totals[code])}`)
-    .join(" + ");
-}
-
 function rowsFrom(tableHtml) {
   return Array.from(tableHtml.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi))
     .map((match) => match[1])
@@ -166,14 +153,14 @@ function tableMarkup(rows, label, isRouge = false) {
   return `          <table>
             <thead>
               <tr>
-                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payment Mode</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th class="num">Original Currency</th><th class="num">USD</th><th>Ex. Rate</th>
+                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payment Mode</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th>Original Currency</th><th class="num">USD</th><th>Ex. Rate</th>
               </tr>
             </thead>
             <tbody>
 ${rowsHtml}
               <tr class="tot">
                 <td colspan="7">${label} subtotal &mdash; ${sortedRows.length} ${plural}</td>
-                <td class="num">${originalCurrencyTotal(sortedRows)}</td>
+                <td class="num"></td>
                 <td class="num">${format(totalUsd)}</td>
                 <td></td>
               </tr>

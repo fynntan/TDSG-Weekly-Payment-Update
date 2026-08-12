@@ -72,6 +72,15 @@ function detailTablesAreUsdDescending(source) {
   );
 }
 
+function originalCurrencySubtotalsAreBlank(source) {
+  return Array.from(source.matchAll(/<tr\s+class=["']tot["'][^>]*>([\s\S]*?)<\/tr>/gi)).every(
+    (row) => {
+      const cells = Array.from(row[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi));
+      return cells.length < 3 || plainText(cells[1][1]) === "";
+    },
+  );
+}
+
 if (!fs.existsSync(reportsRoot)) {
   console.error("No reports directory found.");
   process.exit(1);
@@ -100,6 +109,8 @@ for (const file of files) {
     [/<th[^>]*>\s*Ex\. Rate\s*<\/th>/.test(source), "must include the exact Ex. Rate header"],
     [/<th[^>]*>\s*Original Currency\s*<\/th>/.test(source), "must include the Original Currency header"],
     [!/<th[^>]*>\s*GNF\s*<\/th>/.test(source), "must not label mixed original-currency values as GNF"],
+    [originalCurrencySubtotalsAreBlank(source), "must not total Original Currency"],
+    [/<th>\s*Original Currency\s*<\/th>/.test(source), "Original Currency header must follow the left-aligned text headers"],
     [!requiresPaymentMode || /<th[^>]*>\s*Payment Mode\s*<\/th>/i.test(source), "must include the Payment Mode header"],
     [
       !requiresPaymentMode || /Payment Date\s*<\/th>\s*<th[^>]*>\s*Payment Mode\s*<\/th>\s*<th[^>]*>\s*Payee \/ Supplier/i.test(source),
@@ -145,6 +156,9 @@ for (const file of files) {
     .map((cells) => plainText(cells[cells.length - 3][1]));
   if (originalCurrencyCells.some((value) => !/^(?:GNF|USD|EUR)\s+[\d,.]+$/.test(value))) {
     failures.push(`${name}: every detail row must show its original currency code and amount`);
+  }
+  if (!/<td\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>\s*(?:GNF|USD|EUR)\s+[\d,.]+\s*<\/td>/.test(source)) {
+    failures.push(`${name}: Original Currency values must remain right-aligned`);
   }
 
   const tdsgSummary = summaryAmount(source, "summary-total");
