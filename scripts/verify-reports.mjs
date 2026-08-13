@@ -130,13 +130,14 @@ for (const file of files) {
     [!/<link\b[^>]*href=/i.test(source), "must not load external styles or fonts"],
     [!/<th[^>]*>\s*Remarks\s*<\/th>/i.test(source), "must use Ex. Rate, not Remarks"],
     [/<th[^>]*>\s*Ex\. Rate\s*<\/th>/.test(source), "must include the exact Ex. Rate header"],
-    [/<th[^>]*>\s*Original Currency\s*<\/th>/.test(source), "must include the Original Currency header"],
+    [/<th[^>]*>\s*Original Amount\s*<\/th>/.test(source), "must include the Original Amount header"],
+    [!/<th[^>]*>\s*Original Currency\s*<\/th>/.test(source), "must use Original Amount, not Original Currency"],
     [!/<th[^>]*>\s*GNF\s*<\/th>/.test(source), "must not label mixed original-currency values as GNF"],
-    [originalCurrencySubtotalsAreBlank(source), "must not total Original Currency"],
-    [/<th>\s*Original Currency\s*<\/th>/.test(source), "Original Currency header must follow the left-aligned text headers"],
+    [originalCurrencySubtotalsAreBlank(source), "must not total Original Amount"],
+    [/<th>\s*Original Amount\s*<\/th>/.test(source), "Original Amount header must follow the left-aligned text headers"],
     [!/<th\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>/i.test(source), "all table headers must be left-aligned"],
     [/font-variant-numeric:\s*tabular-nums/.test(source), "numeric values must retain decimal-position alignment"],
-    [/td:nth-child\(8\)[\s\S]*td:nth-child\(9\)[\s\S]*text-align:\s*right/.test(source), "Original Currency and USD columns must be explicitly right-aligned"],
+    [/td:nth-child\(8\)[\s\S]*td:nth-child\(9\)[\s\S]*text-align:\s*right/.test(source), "Original Amount and USD columns must be explicitly right-aligned"],
     [/GNF payments are converted to USD using the BCRG rate applicable on each payment date\./.test(source), "footer must state the GNF conversion basis"],
     [!/Original-currency amounts are shown in the detail table/.test(source), "footer must remain concise"],
     [!/USD payments retain their original amount/.test(source), "footer must remain concise"],
@@ -188,7 +189,7 @@ for (const file of files) {
     failures.push(`${name}: every detail row must show its original currency code and amount`);
   }
   if (!/<td\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>\s*(?:GNF|USD|EUR)\s+[\d,.]+\s*<\/td>/.test(source)) {
-    failures.push(`${name}: Original Currency values must remain right-aligned`);
+    failures.push(`${name}: Original Amount values must remain right-aligned`);
   }
 
   const tdsgSummary = summaryAmount(source, "summary-total");

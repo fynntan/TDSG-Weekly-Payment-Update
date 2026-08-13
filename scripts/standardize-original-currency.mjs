@@ -55,8 +55,8 @@ if (!files.length) {
 for (const file of files) {
   const resolved = path.resolve(file);
   let source = fs.readFileSync(resolved, "utf8");
-  source = source.replace(/(<th\b[^>]*>)\s*GNF\s*(<\/th>)/g, "$1Original Currency$2");
-  source = source.replace(/<th\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>\s*Original Currency\s*<\/th>/g, "<th>Original Currency</th>");
+  source = source.replace(/(<th\b[^>]*>)\s*(?:GNF|Original Currency)\s*(<\/th>)/g, "$1Original Amount$2");
+  source = source.replace(/<th\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>\s*Original Amount\s*<\/th>/g, "<th>Original Amount</th>");
   source = source.replace(/<th\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>\s*USD\s*<\/th>/g, "<th>USD</th>");
   source = source.replace(/Week (\d+),\s*/g, "Week $1 &middot; ");
   source = source.replace(

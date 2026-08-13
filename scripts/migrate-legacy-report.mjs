@@ -153,7 +153,7 @@ function tableMarkup(rows, label, isRouge = false) {
   return `          <table>
             <thead>
               <tr>
-                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payment Mode</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th>Original Currency</th><th>USD</th><th>Ex. Rate</th>
+                <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payment Mode</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th>Original Amount</th><th>USD</th><th>Ex. Rate</th>
               </tr>
             </thead>
             <tbody>

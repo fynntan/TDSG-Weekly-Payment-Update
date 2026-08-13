@@ -56,7 +56,11 @@ const commonIndent = Math.min(
 const cleanBody = bodyLines
   .map((line) => line.slice(Math.min(commonIndent, line.length)).trimEnd())
   .join("\n")
-  .trim();
+  .trim()
+  .replace(
+    /(<th\b[^>]*>)\s*(?:GNF|Original Currency)\s*(<\/th>)/gi,
+    "$1Original Amount$2",
+  );
 
 if (!/class=["']top["']/.test(cleanBody)) {
   fail("The input is missing the report header (.top).");
