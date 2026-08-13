@@ -95,7 +95,7 @@ function normalizedPayee(row) {
   return row.payee.replace(/^Petty Cash\s*-\s*/i, "").trim();
 }
 
-function originalCurrency(row) {
+function originalAmount(row) {
   if (number(row.gnf)) return { code: "GNF", display: `GNF ${row.gnf}` };
   const code = /EUR/i.test(row.rate) ? "EUR" : "USD";
   return { code, display: `${code} ${row.usd}` };
@@ -142,7 +142,7 @@ function tableMarkup(rows, label, isRouge = false) {
                 <td><b>${textCell(normalizedPayee(row))}</b></td>
                 <td>${textCell(normalizedPurpose(row))}</td>
                 <td><span class="tag ${categoryClass(row.category)}">${textCell(row.category)}</span></td>
-                <td class="num">${textCell(originalCurrency(row).display)}</td>
+                <td class="num">${textCell(originalAmount(row).display)}</td>
                 <td class="num">${textCell(row.usd)}</td>
                 <td>${textCell(row.rate)}</td>
               </tr>`,

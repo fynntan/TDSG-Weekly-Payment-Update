@@ -91,13 +91,34 @@ function detailTablesAreUsdDescending(source) {
   );
 }
 
-function originalCurrencySubtotalsAreBlank(source) {
+function originalAmountSubtotalsAreBlank(source) {
   return Array.from(source.matchAll(/<tr\s+class=["']tot["'][^>]*>([\s\S]*?)<\/tr>/gi)).every(
     (row) => {
       const cells = Array.from(row[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi));
       return cells.length < 3 || plainText(cells[1][1]) === "";
     },
   );
+}
+
+function detailHeadersMatch(source, requiresPaymentMode) {
+  const expected = requiresPaymentMode
+    ? [
+        "No", "PRF No", "Payment Date", "Payment Mode", "Payee / Supplier",
+        "Purpose", "Category", "Original Amount", "USD", "Ex. Rate",
+      ]
+    : [
+        "No", "PRF No", "Payment Date", "Payee / Supplier", "Purpose",
+        "Category", "Original Amount", "USD", "Ex. Rate",
+      ];
+  const headerRows = Array.from(source.matchAll(/<thead>[\s\S]*?<tr>([\s\S]*?)<\/tr>[\s\S]*?<\/thead>/gi));
+  return headerRows.length > 0 && headerRows.every((row) => {
+    const actual = Array.from(
+      row[1].matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/gi),
+      (cell) => plainText(cell[1]),
+    );
+    return actual.length === expected.length &&
+      actual.every((label, index) => label === expected[index]);
+  });
 }
 
 if (!fs.existsSync(reportsRoot)) {
@@ -133,7 +154,8 @@ for (const file of files) {
     [/<th[^>]*>\s*Original Amount\s*<\/th>/.test(source), "must include the Original Amount header"],
     [!/<th[^>]*>\s*Original Currency\s*<\/th>/.test(source), "must use Original Amount, not Original Currency"],
     [!/<th[^>]*>\s*GNF\s*<\/th>/.test(source), "must not label mixed original-currency values as GNF"],
-    [originalCurrencySubtotalsAreBlank(source), "must not total Original Amount"],
+    [originalAmountSubtotalsAreBlank(source), "must not total Original Amount"],
+    [detailHeadersMatch(source, requiresPaymentMode), "detail table headers must use the approved labels and order"],
     [/<th>\s*Original Amount\s*<\/th>/.test(source), "Original Amount header must follow the left-aligned text headers"],
     [!/<th\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>/i.test(source), "all table headers must be left-aligned"],
     [/font-variant-numeric:\s*tabular-nums/.test(source), "numeric values must retain decimal-position alignment"],
@@ -179,13 +201,13 @@ for (const file of files) {
     failures.push(`${name}: payment mode must identify OCBC, Ecobank, Rouge POB, or the petty-cash custodian`);
   }
 
-  const originalCurrencyCells = Array.from(
+  const originalAmountCells = Array.from(
     source.matchAll(/<tr>([\s\S]*?)<\/tr>/gi),
     (match) => Array.from(match[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)),
   )
     .filter((cells) => cells.length === 9 || cells.length === 10)
     .map((cells) => plainText(cells[cells.length - 3][1]));
-  if (originalCurrencyCells.some((value) => !/^(?:GNF|USD|EUR)\s+[\d,.]+$/.test(value))) {
+  if (originalAmountCells.some((value) => !/^(?:GNF|USD|EUR)\s+[\d,.]+$/.test(value))) {
     failures.push(`${name}: every detail row must show its original currency code and amount`);
   }
   if (!/<td\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>\s*(?:GNF|USD|EUR)\s+[\d,.]+\s*<\/td>/.test(source)) {
