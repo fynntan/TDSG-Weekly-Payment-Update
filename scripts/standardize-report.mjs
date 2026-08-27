@@ -60,6 +60,10 @@ const cleanBody = bodyLines
   .replace(
     /(<th\b[^>]*>)\s*(?:GNF|Original Currency)\s*(<\/th>)/gi,
     "$1Original Amount$2",
+  )
+  .replace(
+    /(<td\b[^>]*class=["'][^"']*\bnum\b[^"']*["'][^>]*>\s*(?:GNF|USD|EUR)\s+[\d,.]+)\s+\+\s+((?:GNF|USD|EUR)\s+[\d,.]+\s*<\/td>)/gi,
+    "$1<br />+ $2",
   );
 
 if (!/class=["']top["']/.test(cleanBody)) {

@@ -212,6 +212,9 @@ for (const file of files) {
   if (originalAmountCells.some((value) => !/^(?:GNF|USD|EUR)\s+[\d,.]+(?:\s+\+\s+(?:GNF|USD|EUR)\s+[\d,.]+)?$/.test(value))) {
     failures.push(`${name}: every detail row must show its original currency code and amount`);
   }
+  if (/<td\b[^>]*class=["'][^"']*\bnum\b[^"']*["'][^>]*>[^<]*\s+\+\s+(?:GNF|USD|EUR)\b/i.test(source)) {
+    failures.push(`${name}: mixed-currency Original Amount values must split before the plus sign`);
+  }
   if (!/<td\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>\s*(?:GNF|USD|EUR)\s+[\d,.]+\s*<\/td>/.test(source)) {
     failures.push(`${name}: Original Amount values must remain right-aligned`);
   }

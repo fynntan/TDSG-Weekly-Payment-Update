@@ -168,6 +168,10 @@ function exchangeRate(row) {
   return match ? `1 : ${match[1].replace(/,/g, "")}` : row.rate;
 }
 
+function originalAmountMarkup(row) {
+  return textCell(originalAmount(row).display).replace(/ \+ /g, "<br />+ ");
+}
+
 function rowsFrom(tableHtml) {
   return Array.from(tableHtml.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi))
     .map((match) => match[1])
@@ -209,7 +213,7 @@ function tableMarkup(rows, label, isRouge = false) {
                 <td><b>${textCell(normalizedPayee(row))}</b></td>
                 <td>${textCell(normalizedPurpose(row))}</td>
                 <td><span class="tag ${categoryClass(row.category)}">${textCell(row.category)}</span></td>
-                <td class="num">${textCell(originalAmount(row).display)}</td>
+                <td class="num">${originalAmountMarkup(row)}</td>
                 <td class="num">${textCell(row.usd)}</td>
                 <td>${textCell(exchangeRate(row))}</td>
               </tr>`,
