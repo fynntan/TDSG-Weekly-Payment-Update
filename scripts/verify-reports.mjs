@@ -173,6 +173,14 @@ for (const file of files) {
     ],
     [!requiresPaymentMode || !/<b>\s*Petty Cash\b/i.test(source), "must not repeat Petty Cash in Payee / Supplier"],
     [
+      !/TDSG-2026-08-289/.test(source) || /Guinea Customs \/ SACO Shipping Guinea SARL/.test(source),
+      "PRF 289 must identify the customs authority and invoice supplier, not the vessel",
+    ],
+    [
+      !/TDSG-2026-08-290/.test(source) || /Richfull Guinea SARL/.test(source),
+      "PRF 290 must identify the invoice beneficiary, not the vessel",
+    ],
+    [
       !/TDSG-2026-08-283/.test(source) ||
         /Conakry Terminal \/ West Africa Container Agency - Guinea/.test(source),
       "PRF 283 must identify its actual logistics suppliers",
