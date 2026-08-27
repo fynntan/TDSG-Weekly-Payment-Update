@@ -1,0 +1,10 @@
+{
+  "name": "tdsg-weekly-payment-update",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "report:prepare": "node scripts/prepare-report.mjs",
+    "check": "node scripts/verify-reports.mjs",
+    "preview": "node scripts/serve-reports.mjs"
+  }
+}

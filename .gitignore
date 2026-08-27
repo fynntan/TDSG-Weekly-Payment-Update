@@ -1,0 +1,15 @@
+# Local credentials and environment files
+.env
+.env.*
+!.env.example
+
+# Local Codex attachments and dependencies
+.codex-remote-attachments/
+node_modules/
+tmp/
+
+# Temporary and operating-system files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
