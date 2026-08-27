@@ -57,6 +57,15 @@ function categoryClass(category) {
 
 function paymentMode(row, isRouge) {
   if (isRouge) return "Rouge POB";
+  const approvedModes = {
+    "TDSG-2026-08-285": "Petty Cash - Geng Huatong",
+    "TDSG-2026-08-286": "Petty Cash - Liu Qun Tao",
+    "TDSG-2026-08-287": "Petty Cash - Chen Li Hu",
+    "TDSG-2026-08-291": "Petty Cash - Chen Li Hu",
+    "TDSG-2026-08-292": "Petty Cash - Zhang Xi Lian",
+    "TDSG-2026-08-293": "Petty Cash - Zhang Xi Lian",
+  };
+  if (approvedModes[row.prf]) return approvedModes[row.prf];
   if (/TDSG[\/-]CHN-/i.test(row.prf)) return "OCBC";
   const custodian = row.payee.match(/^Petty Cash\s*-\s*(.+)$/i)?.[1]?.trim();
   if (custodian) return `Petty Cash - ${custodian}`;
@@ -78,6 +87,32 @@ function normalizedPurpose(row) {
       "Container Freight - July 2026 (Winning Ocean WA2644 / WA2649)",
     "TDSG-2026-08-283":
       "Port, Shipping, Container and Demurrage Charges - Wirtgen Spare Parts (BL HLCUHAM260530640)",
+    "TDSG-2026-07-251": "Purchase CAT Lubricants and Accessories",
+    "TDSG-2026-07-258":
+      "Purchase Local Spare Parts - May to June 2026 (2026-0005 / 2026-0006)",
+    "TDSG-2026-07-256":
+      "Clearance and Agent Fees - Winning Integrity and DHL Spare Parts (TOP-0104 / TOP-0105)",
+    "TDSG-2026-07-272": "Purchase Oxygen and Acetylene Gases",
+    "TDSG-2026-08-282":
+      "Community Services - July 2026 Production (009/GMS/2026)",
+    "TDSG/CHN-2026-40": "Freight - MV Winning Rich (FS26-3197)",
+    "TDSG/CHN-2026-41": "Insurance Fee",
+    "TDSG-2026-08-285": "Petty Cash Top-up - Conakry, August 2026",
+    "TDSG-2026-08-286": "Canteen Working Advance - August 2026",
+    "TDSG-2026-08-287": "Site Working Advance - August 2026",
+    "TDSG-2026-08-284":
+      "Import Tax - Winning Ocean (WB2649SH301; 2026 S 2089)",
+    "TDSG/CHN-2026-42":
+      "Purchase Wirtgen 280SM Spare Parts (WHK-TOP-2026-005 / HP2026-005)",
+    "TDSG-2026-08-291": "Expatriate Salary - Camp, August 2026",
+    "TDSG-2026-08-292":
+      "Transportation Fee - Wirtgen Spare Parts (TVP-OFF-036 / CKY203816)",
+    "TDSG-2026-08-293":
+      "Expatriate Salary - Office, August 2026 (TVP-OFF-037)",
+    "TDSG-2026-08-289":
+      "Import Tax and Forwarding Fee - Wirtgen Spare Parts (CKY203816)",
+    "TDSG-2026-08-290":
+      "Detention Fee (WP2643SH301; FACT2026080294)",
   };
   return approvedDescriptions[row.prf] || row.purpose;
 }
@@ -90,15 +125,47 @@ function normalizedPayee(row) {
     "TDSG-2026-08-281": "Aliou Bah",
     "TDSG-2026-08-283":
       "Conakry Terminal / West Africa Container Agency - Guinea",
+    "TDSG-2026-07-251": "Neemba Guinée",
+    "TDSG-2026-07-258": "Hua Teng SARLU",
+    "TDSG-2026-07-256": "STE Sahel Entreprise SARLU",
+    "TDSG-2026-07-272": "SIFIG SARLU",
+    "TDSG-2026-08-282": "Société La Guinée Mining Services",
+    "TDSG-2026-08-285": "Geng Huatong",
+    "TDSG-2026-08-286": "Various Canteen Suppliers",
+    "TDSG-2026-08-287": "Various Site Suppliers",
+    "TDSG-2026-08-284": "Guinea Customs / Winning Ocean",
+    "TDSG-2026-08-291": "Expatriate Staff - Camp",
+    "TDSG-2026-08-292": "Biro Transport / Alula Express",
+    "TDSG-2026-08-293": "Expatriate Staff - Office",
+    "TDSG-2026-08-289": "Alula Express",
+    "TDSG-2026-08-290": "Winning Peace",
   };
   if (approvedPayees[row.prf]) return approvedPayees[row.prf];
   return row.payee.replace(/^Petty Cash\s*-\s*/i, "").trim();
 }
 
 function originalAmount(row) {
+  const approvedAmounts = {
+    "TDSG/CHN-2026-37": "USD 18,513",
+    "TDSG/CHN-2026-38": "USD 294,725.29",
+    "TDSG/CHN-2026-39": "USD 85,941",
+    "TDSG-2026-08-280": "USD 1,000",
+    "TDSG/CHN-2026-40": "USD 7,500",
+    "TDSG/CHN-2026-41": "USD 1,898.22",
+    "TDSG/CHN-2026-42": "EUR 114,253.30",
+    "TDSG-2026-08-291": "USD 7,000 + GNF 11,040,000",
+    "TDSG-2026-08-293": "USD 600",
+  };
+  if (approvedAmounts[row.prf]) return { display: approvedAmounts[row.prf] };
   if (number(row.gnf)) return { code: "GNF", display: `GNF ${row.gnf}` };
   const code = /EUR/i.test(row.rate) ? "EUR" : "USD";
   return { code, display: `${code} ${row.usd}` };
+}
+
+function exchangeRate(row) {
+  if (!/GNF/.test(originalAmount(row).display)) return "—";
+  const match = row.rate.match(/1\s*:\s*([\d,]+)/);
+  return match ? `1 : ${match[1].replace(/,/g, "")}` : row.rate;
 }
 
 function rowsFrom(tableHtml) {
@@ -144,7 +211,7 @@ function tableMarkup(rows, label, isRouge = false) {
                 <td><span class="tag ${categoryClass(row.category)}">${textCell(row.category)}</span></td>
                 <td class="num">${textCell(originalAmount(row).display)}</td>
                 <td class="num">${textCell(row.usd)}</td>
-                <td>${textCell(row.rate)}</td>
+                <td>${textCell(exchangeRate(row))}</td>
               </tr>`,
     )
     .join("\n");
@@ -185,7 +252,7 @@ function categoryRows(rows) {
 const legacy = fs.readFileSync(path.resolve(input), "utf8");
 const logo = /--logo:url\("(data:image\/png;base64,[^"]+)"\)/i.exec(legacy)?.[1];
 const tables = Array.from(legacy.matchAll(/<table\b[^>]*class=["'][^"']*\bfin\b[^"']*["'][^>]*>([\s\S]*?)<\/table>/gi)).map((match) => match[1]);
-const reportDate = decode(/<h1[^>]*>[\s\S]*?([0-9]{2}&ndash;[0-9]{2}\s+August\s+2026)[\s\S]*?<\/h1>/i.exec(legacy)?.[1] || "");
+const reportDate = decode(/<h1[^>]*>[\s\S]*?([0-9]{2}\s*&ndash;\s*[0-9]{2}\s+[A-Za-z]+\s+[0-9]{4})[\s\S]*?<\/h1>/i.exec(legacy)?.[1] || "");
 const week = decode(/Weekly Payment Report\s*&middot;\s*Week\s*([^<]+)/i.exec(legacy)?.[1] || "").replace(/\s+of\s+\d+/i, "");
 const prepared = decode(/Prepared by\s*<b>([^<]+)<\/b>/i.exec(legacy)?.[1] || "Finance");
 const reviewed = decode(/Reviewed by\s*<b>([^<]+)<\/b>/i.exec(legacy)?.[1] || "");

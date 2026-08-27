@@ -7,9 +7,11 @@ const reportsRoot = path.join(repositoryRoot, "reports");
 const failures = [];
 const expectedStylesheet = fs
   .readFileSync(path.join(repositoryRoot, "templates", "report.css"), "utf8")
+  .replace(/\r\n/g, "\n")
   .trim();
 const expectedBehavior = fs
   .readFileSync(path.join(repositoryRoot, "templates", "report.js"), "utf8")
+  .replace(/\r\n/g, "\n")
   .trim();
 
 function embeddedAsset(source, tagName) {
@@ -207,7 +209,7 @@ for (const file of files) {
   )
     .filter((cells) => cells.length === 9 || cells.length === 10)
     .map((cells) => plainText(cells[cells.length - 3][1]));
-  if (originalAmountCells.some((value) => !/^(?:GNF|USD|EUR)\s+[\d,.]+$/.test(value))) {
+  if (originalAmountCells.some((value) => !/^(?:GNF|USD|EUR)\s+[\d,.]+(?:\s+\+\s+(?:GNF|USD|EUR)\s+[\d,.]+)?$/.test(value))) {
     failures.push(`${name}: every detail row must show its original currency code and amount`);
   }
   if (!/<td\b[^>]*class=["'][^"']*num[^"']*["'][^>]*>\s*(?:GNF|USD|EUR)\s+[\d,.]+\s*<\/td>/.test(source)) {
