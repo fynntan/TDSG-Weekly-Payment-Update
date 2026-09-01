@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { filenameWeek, reportIsoWeek } from "./report-period.mjs";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(scriptDirectory, "..");
@@ -48,6 +49,15 @@ if (relativeOutput.startsWith("..") || path.isAbsolute(relativeOutput)) {
 }
 
 const source = fs.readFileSync(inputPath, "utf8");
+let expectedWeek;
+try {
+  expectedWeek = reportIsoWeek(source);
+} catch (error) {
+  fail(error.message);
+}
+if (filenameWeek(path.basename(outputPath)) !== expectedWeek) {
+  fail(`Output filename must use ISO Week ${expectedWeek}: ${path.basename(outputPath).replace(/_Week\d+_/i, `_Week${expectedWeek}_`)}`);
+}
 const isLegacy = /<table\b[^>]*class=["'][^"']*\bfin\b/i.test(source);
 const isCurrent = /class=["']top["']/.test(source) &&
   /class=["']panel["']/.test(source);

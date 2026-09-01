@@ -27,6 +27,8 @@ This repository contains the reviewed weekly payment reports and the reusable pr
 
 The builder has no third-party dependencies. Node.js is the only requirement.
 
+Report filenames and visible labels use continuous ISO calendar week numbers. They do not restart at Week 1 each month. For example, the report ending 30 August 2026 is `Week35`, followed by `Week36` for the next calendar week.
+
 ## Source documents and folders
 
 Use these OneDrive folders as the source of truth:
@@ -65,6 +67,7 @@ If the weekly Excel file conflicts with the approved PRF, invoice, or remittance
 - Purposes use a concise description followed by the contract, invoice, BL, or other reference in parentheses when available: `Purchase [item] ([reference])`.
 - `Payee / Supplier` shows the actual recipient or supplier. For petty-cash payments, the staff custodian belongs in `Payment Mode`, not in the supplier field; use `Various [type] Suppliers` when one PRF consolidates multiple vendors.
 - TDSG subtotal, Rouge POB subtotal, and Week Total must all be present and reconcile.
+- Subtotal counts refer to payment lines.
 - Every report is standalone: the logo, stylesheet, and behavior are embedded. External fonts and network resources are not used.
 - A restrictive Content Security Policy permits only the embedded image, style, and script required by the report.
 

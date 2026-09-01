@@ -34,6 +34,10 @@ function normalizePrf(value) {
     .trim();
 }
 
+function calendarWeekLabel(label) {
+  return ({ "Week 1": "Week 32", "Week 2": "Week 33", "Week 3": "Week 34", "Week 4": "Week 35" })[label] || label;
+}
+
 function validateSourceData(htmlRows) {
   if (register.length === 0) throw new Error("The August PRF register is empty.");
   if (htmlRows.length === 0) throw new Error(`No weekly HTML payment rows were found in ${reportDirectory}.`);
@@ -92,6 +96,7 @@ function row({
   expectedReport = "",
   captured = "No",
   htmlReport = "",
+  htmlLineCount = null,
 }) {
   return {
     prf,
@@ -114,9 +119,10 @@ function row({
     notes,
     folder,
     countFlag,
-    expectedReport,
+    expectedReport: calendarWeekLabel(expectedReport),
     captured,
-    htmlReport,
+    htmlReport: calendarWeekLabel(htmlReport),
+    htmlLineCount,
   };
 }
 
@@ -139,14 +145,14 @@ const register = [
   row({ prf: "TDSG-2026-08-291", prfDate: excelDate(2026, 8, 20), mode: "Petty Cash - Chen Li Hu", payee: "Expatriate Staff - Camp", purpose: "Expatriate Salary - Camp, August 2026", category: "Staff Costs", component: "GNF component", currency: "GNF", amount: 11040000, completionDate: excelDate(2026, 8, 20), componentStatus: "Cleared", overallStatus: "Completed", folder: "TDSG-2026-08-291_EXPATRIATE SALARY FOR CAMP AUG'26_20AUG2026", countFlag: 0, expectedReport: "Week 3", captured: "Yes", htmlReport: "Week 3" }),
   row({ prf: "TDSG-2026-08-292", prfDate: excelDate(2026, 8, 21), mode: "Petty Cash - Zhang Xi Lian", payee: "Biro Transport / Alula Express", purpose: "Transportation Fee - Wirtgen Spare Parts (TVP-OFF-036 / CKY203816)", category: "Other Purchase Costs", component: "GNF component", currency: "GNF", amount: 6000000, completionDate: excelDate(2026, 8, 21), componentStatus: "Cleared", overallStatus: "Completed", folder: "TDSG-2026-08-292_BIRO TRANSPORT_ALULA EXPRESS_TRANSPORTATION FEE_21AUG2026", expectedReport: "Week 3", captured: "Yes", htmlReport: "Week 3" }),
   row({ prf: "TDSG-2026-08-293", prfDate: excelDate(2026, 8, 21), mode: "Petty Cash - Zhang Xi Lian", payee: "Expatriate Staff - Office", purpose: "Expatriate Salary - Office, August 2026 (TVP-OFF-037)", category: "Staff Costs", component: "USD component", currency: "USD", amount: 600, completionDate: excelDate(2026, 8, 21), componentStatus: "Cleared", overallStatus: "Completed", folder: "TDSG-2026-08-293_EXPATRIATE SALARY FOR OFFICE AUG'26_21AUG2026", expectedReport: "Week 3", captured: "Yes", htmlReport: "Week 3" }),
-  row({ prf: "TDSG-2026-08-294", prfDate: excelDate(2026, 8, 25), mode: "Petty Cash - Li Yang Yang", payee: "Various Conakry Office Suppliers", purpose: "Conakry Office Working Advance - August 2026", category: "Conakry Office Expenses", component: "GNF component", currency: "GNF", amount: 15196889, completionDate: excelDate(2026, 8, 25), componentStatus: "Cleared", overallStatus: "Completed", notes: "Cash ledger, payment voucher TVP-OFF-038 and supporting receipts are present.", folder: "TDSG-2026-08-294_LYY WORKING ADV FOR AUG'26_25AUG2026", expectedReport: "Week 4" }),
-  row({ prf: "TDSG-2026-08-295", prfDate: excelDate(2026, 8, 25), mode: "Rouge POB", payee: "Mohzain Transit-Transport-Logistics", purpose: "DDI and customs-clearance service fees - Winning Ocean (WA2649SH301)", category: "Other Purchase Costs", component: "GNF component - WA2649SH301", currency: "GNF", amount: 42805000, completionDate: excelDate(2026, 8, 27), componentStatus: "Cleared", overallStatus: "Completed", notes: "Signed and stamped supplier receipts confirm payment on behalf by Rouge.", folder: "TDSG-2026-08-295_PYT ON BEHALF BY ROUGE_CALI,WINNING OCEAN,WINNING WAVE_..._25AUG2026", expectedReport: "Week 4", captured: "Yes", htmlReport: "Week 4" }),
-  row({ prf: "TDSG-2026-08-295", prfDate: excelDate(2026, 8, 25), mode: "Rouge POB", payee: "Mohzain Transit-Transport-Logistics", purpose: "DDI and customs-clearance service fees - Winning Wave (WK2657SH300)", category: "Other Purchase Costs", component: "GNF component - WK2657SH300", currency: "GNF", amount: 18626946, completionDate: excelDate(2026, 8, 27), componentStatus: "Cleared", overallStatus: "Completed", notes: "Signed and stamped supplier receipts confirm payment on behalf by Rouge.", folder: "TDSG-2026-08-295_PYT ON BEHALF BY ROUGE_CALI,WINNING OCEAN,WINNING WAVE_..._25AUG2026", countFlag: 0, expectedReport: "Week 4", captured: "Yes", htmlReport: "Week 4" }),
-  row({ prf: "TDSG-2026-08-295", prfDate: excelDate(2026, 8, 25), mode: "Rouge POB", payee: "Mohzain Transit-Transport-Logistics", purpose: "DDI and customs-clearance service fees - Cali (HLCUHAM260530640)", category: "Other Purchase Costs", component: "GNF component - HLCUHAM260530640", currency: "GNF", amount: 18547973, completionDate: excelDate(2026, 8, 27), componentStatus: "Cleared", overallStatus: "Completed", notes: "Signed and stamped supplier receipts confirm payment on behalf by Rouge.", folder: "TDSG-2026-08-295_PYT ON BEHALF BY ROUGE_CALI,WINNING OCEAN,WINNING WAVE_..._25AUG2026", countFlag: 0, expectedReport: "Week 4", captured: "Yes", htmlReport: "Week 4" }),
-  row({ prf: "TDSG-2026-08-295", prfDate: excelDate(2026, 8, 25), mode: "Rouge POB", payee: "Mohzain Transit-Transport-Logistics", purpose: "DDI and customs-clearance service fees - Winning Ocean (WA2644SH303)", category: "Other Purchase Costs", component: "GNF component - WA2644SH303", currency: "GNF", amount: 11138509, completionDate: excelDate(2026, 8, 27), componentStatus: "Cleared", overallStatus: "Completed", notes: "Four shipment receipt lines reconcile to GNF 91,118,428.", folder: "TDSG-2026-08-295_PYT ON BEHALF BY ROUGE_CALI,WINNING OCEAN,WINNING WAVE_..._25AUG2026", countFlag: 0, expectedReport: "Week 4", captured: "Yes", htmlReport: "Week 4" }),
-  row({ prf: "TDSG-2026-08-296", prfDate: excelDate(2026, 8, 25), mode: "Ecobank", payee: "AGRIB Mokatour SARL", purpose: "Local Guinean Salary - Office, August 2026", category: "Staff Costs", component: "GNF component", currency: "GNF", amount: 13092500, componentStatus: "Pending bank deduction", overallStatus: "Pending", dataCheck: "Pending", notes: "Draft remittance was submitted on 26 August and remained pending approval; no matching deduction through 27 August.", folder: "TDSG-2026-08-296_MOKATOUR_LOCAL GUINEAN SALARY FOR OFFICE_26AUG26" }),
+  row({ prf: "TDSG-2026-08-294", prfDate: excelDate(2026, 8, 25), mode: "Petty Cash - Li Yang Yang", payee: "Various Conakry Office Suppliers", purpose: "Conakry Office Working Advance - August 2026 (TVP-OFF-038)", category: "Conakry Office Expenses", component: "GNF component", currency: "GNF", amount: 15196889, completionDate: excelDate(2026, 8, 25), componentStatus: "Cleared", overallStatus: "Completed", notes: "Cash ledger, payment voucher TVP-OFF-038 and supporting receipts are present.", folder: "TDSG-2026-08-294_LYY WORKING ADV FOR AUG'26_25AUG2026", expectedReport: "Week 4", captured: "Yes", htmlReport: "Week 4" }),
+  row({ prf: "TDSG-2026-08-295", prfDate: excelDate(2026, 8, 25), mode: "Rouge POB", payee: "Mohzain Transit-Transport-Logistics", purpose: "DDI and customs-clearance service fees - Winning Ocean (WA2649SH301)", category: "Other Purchase Costs", component: "GNF component - WA2649SH301", currency: "GNF", amount: 42805000, completionDate: excelDate(2026, 8, 27), componentStatus: "Cleared", overallStatus: "Completed", notes: "Signed and stamped supplier receipts confirm payment on behalf by Rouge.", folder: "TDSG-2026-08-295_PYT ON BEHALF BY ROUGE_CALI,WINNING OCEAN,WINNING WAVE_..._25AUG2026", expectedReport: "Week 4", captured: "Yes", htmlReport: "Week 4", htmlLineCount: 1 }),
+  row({ prf: "TDSG-2026-08-295", prfDate: excelDate(2026, 8, 25), mode: "Rouge POB", payee: "Mohzain Transit-Transport-Logistics", purpose: "DDI and customs-clearance service fees - Winning Wave (WK2657SH300)", category: "Other Purchase Costs", component: "GNF component - WK2657SH300", currency: "GNF", amount: 18626946, completionDate: excelDate(2026, 8, 27), componentStatus: "Cleared", overallStatus: "Completed", notes: "Signed and stamped supplier receipts confirm payment on behalf by Rouge.", folder: "TDSG-2026-08-295_PYT ON BEHALF BY ROUGE_CALI,WINNING OCEAN,WINNING WAVE_..._25AUG2026", countFlag: 0, expectedReport: "Week 4", captured: "Yes", htmlReport: "Week 4", htmlLineCount: 1 }),
+  row({ prf: "TDSG-2026-08-295", prfDate: excelDate(2026, 8, 25), mode: "Rouge POB", payee: "Mohzain Transit-Transport-Logistics", purpose: "DDI and customs-clearance service fees - Cali (HLCUHAM260530640)", category: "Other Purchase Costs", component: "GNF component - HLCUHAM260530640", currency: "GNF", amount: 18547973, completionDate: excelDate(2026, 8, 27), componentStatus: "Cleared", overallStatus: "Completed", notes: "Signed and stamped supplier receipts confirm payment on behalf by Rouge.", folder: "TDSG-2026-08-295_PYT ON BEHALF BY ROUGE_CALI,WINNING OCEAN,WINNING WAVE_..._25AUG2026", countFlag: 0, expectedReport: "Week 4", captured: "Yes", htmlReport: "Week 4", htmlLineCount: 1 }),
+  row({ prf: "TDSG-2026-08-295", prfDate: excelDate(2026, 8, 25), mode: "Rouge POB", payee: "Mohzain Transit-Transport-Logistics", purpose: "DDI and customs-clearance service fees - Winning Ocean (WA2644SH303)", category: "Other Purchase Costs", component: "GNF component - WA2644SH303", currency: "GNF", amount: 11138509, completionDate: excelDate(2026, 8, 27), componentStatus: "Cleared", overallStatus: "Completed", notes: "Four shipment payment lines reconcile to GNF 91,118,428.", folder: "TDSG-2026-08-295_PYT ON BEHALF BY ROUGE_CALI,WINNING OCEAN,WINNING WAVE_..._25AUG2026", countFlag: 0, expectedReport: "Week 4", captured: "Yes", htmlReport: "Week 4", htmlLineCount: 1 }),
+  row({ prf: "TDSG-2026-08-296", prfDate: excelDate(2026, 8, 25), mode: "Ecobank", payee: "AGRIB Mokatour SARL", purpose: "Local Guinean Salary - Office, August 2026", category: "Staff Costs", component: "GNF component", currency: "GNF", amount: 13092500, bankCurrency: "GNF", bankAmount: 13092500, bankDate: excelDate(2026, 8, 27), completionDate: excelDate(2026, 8, 27), componentStatus: "Cleared", overallStatus: "Completed", notes: "Included in ISO Week 35 after the bank deduction was confirmed.", folder: "TDSG-2026-08-296_MOKATOUR_LOCAL GUINEAN SALARY FOR OFFICE_26AUG26", expectedReport: "Week 4", captured: "Yes", htmlReport: "Week 4" }),
   row({ prf: "TDSG-2026-08-298", prfDate: excelDate(2026, 8, 25), mode: "Ecobank", payee: "Da Run Fa", purpose: "Canteen Purchases - Camp, May to August 2026", category: "Staff Costs", component: "GNF component", currency: "GNF", amount: 337273000, componentStatus: "Pending bank deduction", overallStatus: "Pending", dataCheck: "Review - amount mismatch", notes: "PRF states GNF 337,273,000; draft remittance states GNF 377,273,000. Resolve before approval/payment.", folder: "TDSG-2026-08-298_DARUNFA CANTEEN PURCHASE FROM MAY'26 TO AUG'26 FOR CAMP_25AUG2026" }),
-  row({ prf: "TDSG-2026-08-299", prfDate: excelDate(2026, 8, 25), mode: "Ecobank", payee: "AGRIB Mokatour SARL", purpose: "Local Guinean Salary - Site, August 2026", category: "Staff Costs", component: "GNF component", currency: "GNF", amount: 663196500, bankCurrency: "GNF", bankAmount: 663196500, bankDate: excelDate(2026, 8, 27), completionDate: excelDate(2026, 8, 27), componentStatus: "Cleared", overallStatus: "Completed", notes: "Ecobank statement shows the exact GNF 663,196,500 deduction on 27 August.", folder: "TDSG-2026-08-299_MOKATOUR_LOCAL GUINEAN SALARY FOR SITE_25AUG2026", expectedReport: "Week 4" }),
+  row({ prf: "TDSG-2026-08-299", prfDate: excelDate(2026, 8, 25), mode: "Ecobank", payee: "AGRIB Mokatour SARL", purpose: "Local Guinean Salary - Site, August 2026", category: "Staff Costs", component: "GNF component", currency: "GNF", amount: 663196500, bankCurrency: "GNF", bankAmount: 663196500, bankDate: excelDate(2026, 8, 27), completionDate: excelDate(2026, 8, 27), componentStatus: "Cleared", overallStatus: "Completed", notes: "Ecobank statement shows the exact GNF 663,196,500 deduction on 27 August.", folder: "TDSG-2026-08-299_MOKATOUR_LOCAL GUINEAN SALARY FOR SITE_25AUG2026", expectedReport: "Week 4", captured: "Yes", htmlReport: "Week 4" }),
   row({ prf: "TDSG-2026-08-300", prfDate: excelDate(2026, 8, 25), mode: "Ecobank", payee: "Hotel Grand Ami SARLU", purpose: "Accommodation and Meal Expenses - June to August 2026", category: "Staff Costs", component: "GNF component", currency: "GNF", amount: 104840000, componentStatus: "Pending bank deduction", overallStatus: "Pending", dataCheck: "Pending", notes: "Draft remittance submitted 25 August; no matching deduction through 27 August.", folder: "TDSG-2026-08-300_GRAND HOTEL_ACCOMMODATION AND MEAL EXPENSES FROM JUN'25 TO AUG'26_25AUG2026" }),
   row({ prf: "TDSG-2026-08-301", prfDate: excelDate(2026, 8, 25), mode: "Ecobank", payee: "AGRIB Mokatour SARL", purpose: "Milk Allowance - August 2026", category: "Staff Costs", component: "GNF component", currency: "GNF", amount: 14700000, componentStatus: "Pending bank deduction", overallStatus: "Pending", dataCheck: "Pending", notes: "Draft remittance submitted 25 August; no matching deduction through 27 August.", folder: "TDSG-2026-08-301_ALLOWANCE OF MILK FOR AUG'26_25AUG2026" }),
   row({ prf: "TDSG/CHN-2026-40", prfDate: excelDate(2026, 8, 6), source: "China", mode: "OCBC", payee: "Far Sight Logistic Pte. Ltd.", purpose: "Freight - MV Winning Rich (FS26-3197)", category: "Other Purchase Costs", component: "USD component", currency: "USD", amount: 7500, bankCurrency: "USD", bankAmount: 7500, bankDate: excelDate(2026, 8, 14), completionDate: excelDate(2026, 8, 14), componentStatus: "Cleared", overallStatus: "Completed", notes: "OCBC statement matched client reference FS26-3197.", folder: "TDSG-CHN-2026-40", expectedReport: "Week 2", captured: "Yes", htmlReport: "Week 2" }),
@@ -161,7 +167,7 @@ async function htmlPayments() {
   const rows = [];
   for (const file of files) {
     const source = await fs.readFile(path.join(reportDirectory, file), "utf8");
-    const week = /Report_Week(\d)/i.exec(file)?.[1] || "";
+    const week = /Report_Week(\d+)/i.exec(file)?.[1] || "";
     for (const match of source.matchAll(/<tr(?:\s[^>]*)?>([\s\S]*?)<\/tr>/gi)) {
       if (/class=["']tot["']/.test(match[0])) continue;
       const cells = Array.from(match[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi), (cell) => plainText(cell[1]));
@@ -238,11 +244,8 @@ const actionRows = [
   ["Critical", "TDSG-2026-08-298", "Amount mismatch", "Confirm the correct payable amount before approving or releasing payment.", "Open", "Before payment", "PRF GNF 337,273,000; draft GNF 377,273,000", "GNF 40,000,000 discrepancy."],
   ["High", "TDSG-2026-08-285", "USD component not cleared", "Check the bank statement and retain in the pending register until the USD deduction is confirmed.", "Open", "Next bank statement", "USD 50,000", "GNF 400,000,000 component was cleared on 14 August."],
   ["High", "TDSG-2026-08-288", "Bank deduction outstanding", "Check Ecobank for the exact debit; include in HTML only after deduction is confirmed.", "Open", "Next bank statement", "GNF 690,223,394", "Pending register and statements reviewed through 27 August."],
-  ["High", "TDSG-2026-08-295", "Rouge completion evidence", "Signed and stamped supplier receipts reviewed and included in Week 4.", "Closed", "Completed", "GNF 91,118,428", "Eight stamped receipt amounts reconcile to the approved PRF total."],
-  ["Medium", "TDSG-2026-08-296", "Bank deduction outstanding", "Check Ecobank for the exact debit and update the bank-clearance date.", "Open", "Next bank statement", "GNF 13,092,500", "Draft remittance remained pending approval."],
   ["Medium", "TDSG-2026-08-300", "Bank deduction outstanding", "Check Ecobank for the exact debit and update the bank-clearance date.", "Open", "Next bank statement", "GNF 104,840,000", "Draft remittance only through 27 August."],
   ["Medium", "TDSG-2026-08-301", "Bank deduction outstanding", "Check Ecobank for the exact debit and update the bank-clearance date.", "Open", "Next bank statement", "GNF 14,700,000", "Draft remittance only through 27 August."],
-  ["Medium", "TDSG/CHN-2026-41", "PRF identifier confirmation", "Amended cash book reviewed; identifier confirmed as TDSG/CHN/2026-41.", "Closed", "Completed", "USD 1,898.22", "Cash book payment and bank-charge rows now agree with the HTML and PRF folder."],
   ["Low", "PRF 297", "Sequence gap", "Confirm whether PRF 297 was intentionally skipped or is stored outside the August folders.", "Open", "Before final monthly close", "No folder found", "Do not assume a missing payment without a source document."],
 ];
 actions.getRangeByIndexes(4, 0, actionRows.length, 8).values = actionRows;
@@ -264,7 +267,7 @@ setColumnWidths(actions, [12, 20, 24, 55, 13, 22, 31, 55]);
 const capturedPrfs = new Set();
 const augustRows = register.map((item) => {
   const normalized = normalizePrf(item.prf);
-  const htmlRowFlag = item.captured === "Yes" && !capturedPrfs.has(normalized) ? 1 : 0;
+  const htmlRowFlag = item.captured === "Yes" && !capturedPrfs.has(normalized) ? (item.htmlLineCount || 1) : 0;
   if (item.captured === "Yes") capturedPrfs.add(normalized);
   return {
     scope: "August PRF raised",
@@ -318,7 +321,7 @@ combined.getRange("A4:Z4").values = [[
   "Scope", "PRF No.", "PRF Date", "Source", "Payment Mode", "Payee / Supplier", "Purpose", "Category", "Component",
   "Original Currency", "Original Amount", "Bank Currency", "Bank Deducted Amount", "Bank Clearance Date", "Payment Completion Date",
   "Component Status", "Overall PRF Status", "Expected HTML Report", "HTML Captured?", "Actual HTML Report", "HTML Check",
-  "Data Check", "Notes", "Source Folder / Report File", "PRF Count Flag", "HTML Row Count Flag",
+  "Data Check", "Notes", "Source Folder / Report File", "PRF Count Flag", "HTML Payment Line Count",
 ]];
 styleHeader(combined.getRange("A4:Z4"));
 const combinedValues = combinedRows.map((item) => [
@@ -332,7 +335,7 @@ const registerEnd = combinedValues.length + 4;
 for (let index = 0; index < combinedRows.length; index += 1) {
   const excelRow = index + 5;
   combined.getRange(`U${excelRow}`).formulas = [[
-    `=IF(P${excelRow}="Pending bank deduction",IF(S${excelRow}="No","Correctly excluded","Review"),IF(P${excelRow}="Evidence review required",IF(S${excelRow}="No","Awaiting evidence","Review"),IF(R${excelRow}="Week 4",IF(S${excelRow}="No","Week 4 report pending","OK"),IF(S${excelRow}="Yes","OK","Missing from HTML"))))`,
+    `=IF(P${excelRow}="Pending bank deduction",IF(S${excelRow}="No","Correctly excluded","Review"),IF(P${excelRow}="Evidence review required",IF(S${excelRow}="No","Awaiting evidence","Review"),IF(R${excelRow}="Week 35",IF(S${excelRow}="No","Week 35 report pending","OK"),IF(S${excelRow}="Yes","OK","Missing from HTML"))))`,
   ]];
   combined.getRange(`K${excelRow}`).format.numberFormat = combinedRows[index].currency === "GNF" ? "#,##0" : "#,##0.00";
   combined.getRange(`M${excelRow}`).format.numberFormat = combinedRows[index].bankCurrency === "GNF" ? "#,##0" : "#,##0.00";
@@ -348,7 +351,7 @@ combinedDataRange.conditionalFormats.addCustom(
   { fill: "#FFC7CE", font: { bold: true } },
 );
 combinedDataRange.conditionalFormats.addCustom(
-  '=OR($P5="Pending bank deduction",$P5="Evidence review required",$U5="Week 4 report pending")',
+  '=OR($P5="Pending bank deduction",$P5="Evidence review required",$U5="Week 35 report pending")',
   { fill: "#FFF2CC" },
 );
 combinedDataRange.conditionalFormats.addCustom('=$A5="Prior-month PRF paid in August"', { fill: "#F2F2F2" });
@@ -371,7 +374,7 @@ const sourceRows = [
   ["Ecobank statement", "01-27 Aug 2026", "01AUG - 27AUG.pdf (GNF)", "Cash & Bank Records\\Bank Statement\\2026\\2026 ECOBANK Bank Statement - GNF\\08.AUG2026", "Posting/value dates and bank deductions", "Matched PRFs 282, 285 GNF component and 299."],
   ["Ecobank statement", "01-27 Aug 2026", "01AUG to 27AUG.pdf (USD)", "Cash & Bank Records\\Bank Statement\\2026\\2026 ECOBANK Bank Statement - USD\\08.AUG2026", "USD bank deductions", "No USD withdrawals."],
   ["OCBC statement", "29 Jul-27 Aug 2026", "01AUG to 12AUG.pdf and 01AUG to 27AUG.pdf", "Cash & Bank Records\\Bank Statement\\2026\\2026 OCBC Bank Statement - USD\\08.AUGUST2026", "Posting/value dates and bank deductions", "Matched China PRFs 37/38/39/40/41/42; 37-39 were raised in July."],
-  ["Weekly HTML", "Weeks 1-3 through 23-Aug-2026", "Three August weekly HTML reports", "Weekly Payment Approval Lists\\2026\\08.AUG2026", "Payment-detail completeness", `${htmlRows.length} payment rows extracted; 7 are prior-month PRFs paid in August.`],
+  ["Weekly HTML", "Weeks 32-35 through 30-Aug-2026", "Four August weekly HTML reports", "Weekly Payment Approval Lists\\2026\\08.AUG2026", "Payment-detail completeness", `${htmlRows.length} payment rows extracted; prior-month PRFs paid in August are identified separately.`],
 ];
 sources.getRangeByIndexes(3, 0, sourceRows.length, 6).values = sourceRows;
 sources.getRange(`A4:F${sourceRows.length + 3}`).format = { font: { name: "Aptos", size: 10 }, verticalAlignment: "center", wrapText: true, borders: { insideHorizontal: { style: "thin", color: "#D9E2F3" } } };
@@ -379,7 +382,7 @@ sources.getRange("A12:C12").values = [["Control", "Result", "Interpretation"]];
 styleHeader(sources.getRange("A12:C12"));
 sources.getRange("A13:C16").values = [
   ["MODEL STATUS", null, "PASS only when current HTML has no missing due items and unresolved source exceptions are disclosed."],
-  ["Missing due HTML items", null, "Expected Weeks 1-3 items absent from HTML."],
+  ["Missing due HTML items", null, "Expected Weeks 32-35 items absent from HTML."],
   ["Unresolved source exceptions", null, "PRF/document discrepancies requiring follow-up."],
   ["Bank evidence cutoff", asOfDate, "Statements reviewed through this date."],
 ];
@@ -413,13 +416,13 @@ summary.getRange("B5:B10").formulas = [
 ];
 summary.getRange("D4:E4").values = [["HTML Control", "Count"]];
 styleHeader(summary.getRange("D4:E4"));
-summary.getRange("D5:D10").values = [["Current HTML payment rows"], ["August-raised PRFs captured"], ["Prior-month PRFs paid in August"], ["Missing due HTML items"], ["Week 4 items awaiting report"], ["Open follow-up items"]];
+summary.getRange("D5:D10").values = [["Current HTML payment lines"], ["August-raised PRFs captured"], ["Prior-month PRFs paid in August"], ["Missing due HTML items"], ["Week 35 items awaiting report"], ["Open follow-up items"]];
 summary.getRange("E5:E10").formulas = [
   [`=SUM('Combined Register'!$Z$5:$Z$${registerEnd})`],
   [`=SUMIFS('Combined Register'!$Y$5:$Y$${registerEnd},'Combined Register'!$A$5:$A$${registerEnd},"August PRF raised",'Combined Register'!$S$5:$S$${registerEnd},"Yes")`],
   [`=COUNTIF('Combined Register'!$A$5:$A$${registerEnd},"Prior-month PRF paid in August")`],
   [`=COUNTIF('Combined Register'!$U$5:$U$${registerEnd},"Missing from HTML")`],
-  [`=COUNTIF('Combined Register'!$U$5:$U$${registerEnd},"Week 4 report pending")`],
+  [`=COUNTIF('Combined Register'!$U$5:$U$${registerEnd},"Week 35 report pending")`],
   [`=COUNTIF('Action Required'!$E$5:$E$${actionEnd},"<>Completed")`],
 ];
 summary.getRange("A12:H12").merge();
@@ -427,8 +430,8 @@ summary.getRange("A12").values = [["Items requiring attention"]];
 summary.getRange("A12:H12").format = { fill: "#D9E2F3", font: { name: "Aptos", size: 12, bold: true, color: "#17365D" } };
 summary.getRange("A13:H16").values = [
   ["PRF 298", "Amount mismatch", null, "PRF: GNF 337,273,000", "Draft remittance: GNF 377,273,000", "Resolve before payment", null, null],
-  ["China PRF 41", "Confirmed", null, "Amended cash book: TDSG/CHN/2026-41", "HTML: TDSG/CHN-2026-41", "Resolved", null, null],
-  ["PRF 295", "Completed", null, "Signed and stamped Rouge POB receipts reviewed", "Eight receipt amounts reconcile to GNF 91,118,428", "Included in Week 4", null, null],
+  ["PRF 285", "USD component pending", null, "GNF component was cleared", "USD 50,000 remains unconfirmed", "Retain in pending register until bank deduction", null, null],
+  ["PRF 288", "Bank deduction pending", null, "Payment request is approved", "No matching Ecobank deduction through the cutoff", "Retain in pending register", null, null],
   ["PRF 297", "Sequence gap", null, "No August PRF folder found", "Not assumed to be missing without a source document", "Confirm whether number was intentionally skipped", null, null],
 ];
 summary.getRange("A13:H16").format = { font: { name: "Aptos", size: 10 }, verticalAlignment: "center", wrapText: true, borders: { insideHorizontal: { style: "thin", color: "#D9E2F3" } } };

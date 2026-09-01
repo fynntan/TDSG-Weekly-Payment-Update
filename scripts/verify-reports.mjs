@@ -1,10 +1,20 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { filenameWeek, isoWeekNumber, reportIsoWeek } from "./report-period.mjs";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const reportsRoot = path.join(repositoryRoot, "reports");
 const failures = [];
+for (const [date, expectedWeek] of [
+  [new Date(Date.UTC(2026, 7, 30)), 35],
+  [new Date(Date.UTC(2026, 8, 6)), 36],
+  [new Date(Date.UTC(2026, 8, 13)), 37],
+]) {
+  if (isoWeekNumber(date) !== expectedWeek) {
+    failures.push(`ISO week calculation failed for ${date.toISOString().slice(0, 10)}; expected Week ${expectedWeek}`);
+  }
+}
 const expectedStylesheet = fs
   .readFileSync(path.join(repositoryRoot, "templates", "report.css"), "utf8")
   .replace(/\r\n/g, "\n")
@@ -138,12 +148,27 @@ if (files.length === 0) {
 for (const file of files) {
   const source = fs.readFileSync(file, "utf8");
   const name = path.relative(repositoryRoot, file);
+  let expectedWeek = null;
+  try {
+    expectedWeek = reportIsoWeek(source);
+  } catch (error) {
+    failures.push(`${name}: ${error.message}`);
+  }
+  const reportLabelWeeks = Array.from(
+    source.matchAll(/Weekly Payment Report\s*(?:&middot;|&#183;|·)\s*Week\s*(\d+)/gi),
+    (match) => Number(match[1]),
+  );
+  const titleWeek = Number(/<title>[\s\S]*?Week\s*(\d+)/i.exec(source)?.[1] || 0);
   const requiresPaymentMode = !/[\\/]2026-07[\\/]/.test(name);
   const embeddedStylesheet = embeddedAsset(source, "style");
   const embeddedBehavior = embeddedAsset(source, "script");
   const checks = [
     [count(source, /<style\b/gi) === 1, "must contain exactly one stylesheet"],
     [count(source, /<script\b/gi) === 1, "must contain exactly one script"],
+    [expectedWeek !== null && filenameWeek(path.basename(file)) === expectedWeek, "filename must use the ISO week number derived from the report end date"],
+    [expectedWeek !== null && titleWeek === expectedWeek, "document title must use the ISO week number derived from the report end date"],
+    [expectedWeek !== null && reportLabelWeeks.length >= 2 && reportLabelWeeks.every((week) => week === expectedWeek), "visible report labels must consistently use the ISO week number"],
+    [!/\breceipt lines\b/i.test(source), "subtotal wording must use payment lines, not receipt lines"],
     [embeddedStylesheet === expectedStylesheet, "embedded stylesheet must match templates/report.css; regenerate the report"],
     [embeddedBehavior === expectedBehavior, "embedded behavior must match templates/report.js; regenerate the report"],
     [/Content-Security-Policy/i.test(source), "must include a Content Security Policy"],

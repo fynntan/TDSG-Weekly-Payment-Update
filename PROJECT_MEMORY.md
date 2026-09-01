@@ -29,7 +29,7 @@ The presence of a payment under `Payment Request` is not proof that it was paid.
 - Payment completed after the weekly cutoff: include it in the later week containing the actual payment date, not the earlier request week.
 - Match using PRF number first, then payee, currency, and exact amount. Investigate rather than guess when evidence conflicts.
 
-Example: `TDSG-2026-08-282` (GMS), GNF 177,826,148, was requested on 5 August 2026 but Ecobank deducted it on 11 August 2026. It belongs in Week 2, not Week 1.
+Example: `TDSG-2026-08-282` (GMS), GNF 177,826,148, was requested on 5 August 2026 but Ecobank deducted it on 11 August 2026. It belongs in ISO Week 33, not Week 32.
 
 ## Source-document rules
 
@@ -84,18 +84,18 @@ Keep an online payment in the register until bank deduction is confirmed. For a 
 
 ## August 2026 correction reference
 
-Week 1, 03–09 August 2026, excludes PRF `08-282` because its bank deduction occurred on 11 August:
+ISO Week 32, 03–09 August 2026, excludes PRF `08-282` because its bank deduction occurred on 11 August:
 
 - TDSG subtotal: 7 payments; USD 408,011.
 - Rouge POB subtotal: 1 payment; USD 717.
 - Week Total: USD 408,728.
 
-Week 4, 24â€“30 August 2026:
+ISO Week 35, 24–30 August 2026:
 
 - PRF `TDSG-2026-08-295` is a completed Rouge POB payment dated 27 August 2026 based on signed and stamped supplier receipts.
 - Its actual payee is `Mohzain Transit-Transport-Logistics`; Cali, Winning Ocean, and Winning Wave are shipment references.
 - Split PRF 295 into four report lines: WA2649SH301 GNF 42,805,000; WK2657SH300 GNF 18,626,946; HLCUHAM260530640 GNF 18,547,973; and WA2644SH303 GNF 11,138,509.
-- The four lines reconcile to GNF 91,118,428 and USD 10,372 at `1 : 8785`; Week 4 total is USD 89,086.
+- The four payment lines reconcile to GNF 91,118,428 and USD 10,372 at `1 : 8785`; Week 35 total is USD 89,086.
 - Keep the repository report and the operational OneDrive HTML synchronized; Finance normally opens the OneDrive copy.
 
 China PRF identifier correction:

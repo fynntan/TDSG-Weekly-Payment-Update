@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { normalizeReportWeek, reportIsoWeek } from "./report-period.mjs";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(scriptDirectory, "..");
@@ -38,6 +39,13 @@ if (!title || !body) {
   fail("The input does not contain a complete <title> and <body>.");
 }
 
+let week;
+try {
+  week = reportIsoWeek(source);
+} catch (error) {
+  fail(error.message);
+}
+
 const stylesheet = fs
   .readFileSync(path.join(repositoryRoot, "templates", "report.css"), "utf8")
   .trim();
@@ -53,7 +61,7 @@ const nonEmptyLines = bodyLines.filter((line) => line.trim());
 const commonIndent = Math.min(
   ...nonEmptyLines.map((line) => line.match(/^\s*/)[0].length),
 );
-const cleanBody = bodyLines
+const cleanBody = normalizeReportWeek(bodyLines
   .map((line) => line.slice(Math.min(commonIndent, line.length)).trimEnd())
   .join("\n")
   .trim()
@@ -64,7 +72,8 @@ const cleanBody = bodyLines
   .replace(
     /(<td\b[^>]*class=["'][^"']*\bnum\b[^"']*["'][^>]*>\s*(?:GNF|USD|EUR)\s+[\d,.]+)\s+\+\s+((?:GNF|USD|EUR)\s+[\d,.]+\s*<\/td>)/gi,
     "$1<br />+ $2",
-  );
+  )
+  .replace(/\breceipt lines\b/gi, "payment lines"), week);
 
 if (!/class=["']top["']/.test(cleanBody)) {
   fail("The input is missing the report header (.top).");
@@ -84,7 +93,7 @@ const document = `<!doctype html>
       content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; object-src 'none'"
     />
     <meta name="color-scheme" content="light" />
-    <title>${title[1].trim()}</title>
+    <title>${normalizeReportWeek(title[1].trim(), week)}</title>
     <style>
 ${stylesheet
   .split("\n")

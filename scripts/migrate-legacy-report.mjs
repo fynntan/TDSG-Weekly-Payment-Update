@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { reportIsoWeek } from "./report-period.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const input = process.argv[2];
@@ -137,8 +138,8 @@ function normalizedPayee(row) {
     "TDSG-2026-08-291": "Expatriate Staff - Camp",
     "TDSG-2026-08-292": "Biro Transport / Alula Express",
     "TDSG-2026-08-293": "Expatriate Staff - Office",
-    "TDSG-2026-08-289": "Alula Express",
-    "TDSG-2026-08-290": "Winning Peace",
+    "TDSG-2026-08-289": "Guinea Customs / SACO Shipping Guinea SARL",
+    "TDSG-2026-08-290": "Richfull Guinea SARL",
   };
   if (approvedPayees[row.prf]) return approvedPayees[row.prf];
   return row.payee.replace(/^Petty Cash\s*-\s*/i, "").trim();
@@ -257,7 +258,7 @@ const legacy = fs.readFileSync(path.resolve(input), "utf8");
 const logo = /--logo:url\("(data:image\/png;base64,[^"]+)"\)/i.exec(legacy)?.[1];
 const tables = Array.from(legacy.matchAll(/<table\b[^>]*class=["'][^"']*\bfin\b[^"']*["'][^>]*>([\s\S]*?)<\/table>/gi)).map((match) => match[1]);
 const reportDate = decode(/<h1[^>]*>[\s\S]*?([0-9]{2}\s*&ndash;\s*[0-9]{2}\s+[A-Za-z]+\s+[0-9]{4})[\s\S]*?<\/h1>/i.exec(legacy)?.[1] || "");
-const week = decode(/Weekly Payment Report\s*&middot;\s*Week\s*([^<]+)/i.exec(legacy)?.[1] || "").replace(/\s+of\s+\d+/i, "");
+const week = reportIsoWeek(legacy);
 const prepared = decode(/Prepared by\s*<b>([^<]+)<\/b>/i.exec(legacy)?.[1] || "Finance");
 const reviewed = decode(/Reviewed by\s*<b>([^<]+)<\/b>/i.exec(legacy)?.[1] || "");
 
