@@ -1,6 +1,6 @@
 # TDSG Weekly Payment Update — Project Memory
 
-Last updated: 2026-08-27 (Asia/Singapore)
+Last updated: 2026-09-01 (Asia/Singapore)
 
 ## Purpose
 
@@ -23,6 +23,7 @@ The presence of a payment under `Payment Request` is not proof that it was paid.
 - Online bank payment: include only when the relevant bank statement shows the deduction, using the posting/value date as the payment date.
 - Cash payment: include only when the completed cash-payment evidence supports payment within the week.
 - Rouge payment on behalf: include only when the completed Rouge POB evidence supports payment within the week.
+- A supplier receipt carrying the completed signature/company stamp is accepted as completed Rouge POB evidence.
 - Approved or submitted online payment without bank deduction: exclude it and record it in the pending-bank-deduction register.
 - Draft remittance, transfer instruction, PRF, or online-banking submission alone: insufficient evidence of completed payment.
 - Payment completed after the weekly cutoff: include it in the later week containing the actual payment date, not the earlier request week.
@@ -37,7 +38,9 @@ Example: `TDSG-2026-08-282` (GMS), GNF 177,826,148, was requested on 5 August 20
 - Use the completed-payment evidence for inclusion and payment date.
 - Use the PRF and underlying documents for payment mode, actual supplier/payee, purpose, contract/invoice reference, original amount, category, and supporting description.
 - The actual supplier belongs in `Payee / Supplier`; a cash custodian belongs in `Payment Mode`.
+- Vessel, shipment, and bill-of-lading names belong in `Purpose`, not `Payee / Supplier`; use the invoice or receipt issuer as the payee.
 - One remittance covering multiple invoices must reconcile to the combined invoices.
+- When one PRF covers several separately supported shipments, split it into shipment-level report rows while keeping the PRF total reconciled and counting the PRF once in monthly controls.
 - Reconcile only through the stated report end date.
 
 ## Pending-bank-deduction register
@@ -86,6 +89,18 @@ Week 1, 03–09 August 2026, excludes PRF `08-282` because its bank deduction oc
 - TDSG subtotal: 7 payments; USD 408,011.
 - Rouge POB subtotal: 1 payment; USD 717.
 - Week Total: USD 408,728.
+
+Week 4, 24â€“30 August 2026:
+
+- PRF `TDSG-2026-08-295` is a completed Rouge POB payment dated 27 August 2026 based on signed and stamped supplier receipts.
+- Its actual payee is `Mohzain Transit-Transport-Logistics`; Cali, Winning Ocean, and Winning Wave are shipment references.
+- Split PRF 295 into four report lines: WA2649SH301 GNF 42,805,000; WK2657SH300 GNF 18,626,946; HLCUHAM260530640 GNF 18,547,973; and WA2644SH303 GNF 11,138,509.
+- The four lines reconcile to GNF 91,118,428 and USD 10,372 at `1 : 8785`; Week 4 total is USD 89,086.
+- Keep the repository report and the operational OneDrive HTML synchronized; Finance normally opens the OneDrive copy.
+
+China PRF identifier correction:
+
+- The amended cash book confirms `TDSG/CHN/2026-41` on the USD 1,898.22 payment and USD 48 bank-charge rows. The former `TGM` mismatch is resolved.
 
 ## Repository conventions
 
