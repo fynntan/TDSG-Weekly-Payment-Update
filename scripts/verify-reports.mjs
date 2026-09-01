@@ -23,6 +23,53 @@ const expectedBehavior = fs
   .readFileSync(path.join(repositoryRoot, "templates", "report.js"), "utf8")
   .replace(/\r\n/g, "\n")
   .trim();
+const migrationSource = fs.readFileSync(
+  path.join(repositoryRoot, "scripts", "migrate-legacy-report.mjs"),
+  "utf8",
+);
+const reconciliationSource = fs.readFileSync(
+  path.join(repositoryRoot, "scripts", "build-monthly-prf-register.mjs"),
+  "utf8",
+);
+
+function breakdownTemplateIsSafe() {
+  const style = /\.breakdown-row\s+td\s*\{([^}]*)\}/i.exec(expectedStylesheet)?.[1] || "";
+  const forbiddenLayoutOverrides = /(?:font-size|padding|height|line-height|text-align|vertical-align|background|margin|transform)\s*:/i;
+  return /color:\s*#77736d/i.test(style) && /font-style:\s*italic/i.test(style) &&
+    !forbiddenLayoutOverrides.test(style) && !/\.breakdown-note\b/i.test(expectedStylesheet);
+}
+
+function groupedSortingIsSafe() {
+  return /querySelectorAll\("tr:not\(\.tot\):not\(\.breakdown-row\)"\)/.test(expectedBehavior) &&
+    /b\.parent\.cells\[8\]/.test(expectedBehavior) &&
+    /block\.rows\.forEach/.test(expectedBehavior) &&
+    !/querySelectorAll\("tr:not\(\.tot\)"\)/.test(expectedBehavior);
+}
+
+function reusableGeneratorsAreSafe() {
+  const breakdownMarkup = /<tr class="breakdown-row">([\s\S]*?)<\/tr>/.exec(migrationSource)?.[1] || "";
+  const cells = Array.from(
+    breakdownMarkup.matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/g),
+    (cell) => cell[1].trim(),
+  );
+  const suppressedCellsAreBlank = cells.length === 10 &&
+    [1, 2, 3, 4, 6, 9].every((index) => cells[index] === "");
+  const countedCellsRemain = cells.length === 10 && cells[0] && cells[5] && cells[7] && cells[8];
+  const reconciliationSkipsChildren = /\b(?:tot\|breakdown-row\|breakdown-note)\b/.test(reconciliationSource) &&
+    /htmlRowFlag/.test(reconciliationSource);
+  return suppressedCellsAreBlank && countedCellsRemain && reconciliationSkipsChildren &&
+    !/breakdown-note/.test(migrationSource);
+}
+
+if (!breakdownTemplateIsSafe()) {
+  failures.push("templates/report.css: breakdown rows may only override muted text colour and italic style");
+}
+if (!groupedSortingIsSafe()) {
+  failures.push("templates/report.js: sorting must treat each parent and its breakdown rows as one counted block");
+}
+if (!reusableGeneratorsAreSafe()) {
+  failures.push("reusable generators must suppress child metadata and exclude breakdown rows from reconciliation counts");
+}
 
 function embeddedAsset(source, tagName) {
   const match = new RegExp(`<${tagName}\\b[^>]*>([\\s\\S]*?)<\\/${tagName}>`, "i")
@@ -67,12 +114,14 @@ function amount(text) {
 }
 
 function tableSubtotal(source, label) {
-  const row = new RegExp(
-    `<tr\\s+class=["']tot["'][^>]*>([\\s\\S]*?${label}[\\s\\S]*?)<\\/tr>`,
-    "i",
-  ).exec(source);
+  const row = Array.from(
+    source.matchAll(/<tr\b([^>]*)class=["'][^"']*\btot\b[^"']*["']([^>]*)>([\s\S]*?)<\/tr>/gi),
+  ).find((match) => new RegExp(label, "i").test(plainText(match[3])));
   if (!row) return null;
-  const cells = Array.from(row[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi));
+  const attributes = `${row[1]} ${row[2]}`;
+  const explicitTotal = /data-usd=["']([\d,.]+)["']/i.exec(attributes);
+  if (explicitTotal) return amount(explicitTotal[1]);
+  const cells = Array.from(row[3].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi));
   const numericValues = cells
     .slice(1)
     .map((cell) => plainText(cell[1]))
@@ -93,14 +142,63 @@ function detailTablesAreUsdDescending(source) {
   return Array.from(source.matchAll(/<tbody>([\s\S]*?)<\/tbody>/gi)).every(
     (tbody) => {
       const usdValues = Array.from(
-        tbody[1].matchAll(/<tr(?![^>]*class=["'][^"']*tot)(?:\s[^>]*)?>([\s\S]*?)<\/tr>/gi),
-        (row) => Array.from(row[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)),
+        tbody[1].matchAll(/<tr\b([^>]*)>([\s\S]*?)<\/tr>/gi),
+        (row) => ({
+          attributes: row[1],
+          cells: Array.from(row[2].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)),
+        }),
       )
-        .filter((cells) => cells.length === 10)
-        .map((cells) => amount(plainText(cells[8][1])));
+        .filter(({ attributes, cells }) =>
+          cells.length === 10 && !/\b(?:tot|breakdown-row|breakdown-note)\b/i.test(attributes),
+        )
+        .map(({ cells }) => amount(plainText(cells[8][1])));
       return usdValues.every((value, index) => index === 0 || usdValues[index - 1] >= value);
     },
   );
+}
+
+function prf295BreakdownIsValid(source) {
+  if (!/TDSG-2026-08-295/.test(source)) return true;
+  const rows = Array.from(source.matchAll(/<tr\b([^>]*)>([\s\S]*?)<\/tr>/gi), (match) => ({
+    attributes: match[1],
+    cells: Array.from(match[2].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)),
+  }));
+  const parentRows = rows.filter(({ attributes, cells }) =>
+    /\bpayment-parent\b/.test(attributes) && cells.length === 10 &&
+      plainText(cells[1][1]) === "TDSG-2026-08-295",
+  );
+  const children = rows.filter(({ attributes }) => /\bbreakdown-row\b/.test(attributes));
+  if (parentRows.length !== 1 || children.length !== 4 ||
+      children.some(({ cells }) => cells.length !== 10)) return false;
+  const parent = parentRows[0].cells;
+  if (plainText(parent[5][1]) !== "DDI and customs-clearance fees — 4 underlying vessel cost lines" ||
+      plainText(parent[4][1]) !== "Mohzain Transit-Transport-Logistics" ||
+      plainText(parent[6][1]) !== "Other Purchase Costs" ||
+      plainText(parent[7][1]) !== "GNF 91,118,428" ||
+      amount(plainText(parent[8][1])) !== 10372 || plainText(parent[9][1]) !== "1 : 8785") {
+    return false;
+  }
+  const childNumbers = children.map(({ cells }) => plainText(cells[0][1]));
+  const childMetadataIsBlank = children.every(({ cells }) =>
+    cells.slice(1, 5).every((cell) => plainText(cell[1]) === "") &&
+      plainText(cells[6][1]) === "" && plainText(cells[9][1]) === "",
+  );
+  const childContentIsComplete = children.every(({ cells }) =>
+    /^1\.[1-4]$/.test(plainText(cells[0][1])) && plainText(cells[5][1]) !== "" &&
+      /^GNF\s+[\d,]+$/.test(plainText(cells[7][1])) && amount(plainText(cells[8][1])) > 0,
+  );
+  const childGnf = children.reduce((sum, { cells }) => sum + amount(plainText(cells[7][1])), 0);
+  const childUsd = children.reduce((sum, { cells }) => sum + amount(plainText(cells[8][1])), 0);
+  const countedPrfRows = rows.filter(({ attributes, cells }) =>
+    cells.length === 10 && !/\b(?:tot|breakdown-row|breakdown-note)\b/.test(attributes) &&
+      plainText(cells[1][1]) === "TDSG-2026-08-295",
+  );
+  return childNumbers.join(",") === "1.1,1.2,1.3,1.4" &&
+    childMetadataIsBlank && childContentIsComplete && countedPrfRows.length === 1 &&
+    childGnf === amount(plainText(parent[7][1])) && childUsd === amount(plainText(parent[8][1])) &&
+    !/\bbreakdown-note\b/.test(source) &&
+    !/Lines 1\.1(?:&ndash;|–)1\.4 are breakdowns/.test(source) &&
+    /<tr class=["']tot["']><td colspan=["']7["']>Rouge POB subtotal\s*&mdash;\s*1 payment<\/td><td class=["']num["']><\/td><td class=["']num["']>10,372<\/td><td><\/td><\/tr>/.test(source);
 }
 
 function originalAmountSubtotalsAreBlank(source) {
@@ -162,6 +260,7 @@ for (const file of files) {
   const requiresPaymentMode = !/[\\/]2026-07[\\/]/.test(name);
   const embeddedStylesheet = embeddedAsset(source, "style");
   const embeddedBehavior = embeddedAsset(source, "script");
+  const usesCurrentTemplate = /--report-template-version:\s*2/.test(source);
   const checks = [
     [count(source, /<style\b/gi) === 1, "must contain exactly one stylesheet"],
     [count(source, /<script\b/gi) === 1, "must contain exactly one script"],
@@ -169,8 +268,8 @@ for (const file of files) {
     [expectedWeek !== null && titleWeek === expectedWeek, "document title must use the ISO week number derived from the report end date"],
     [expectedWeek !== null && reportLabelWeeks.length >= 2 && reportLabelWeeks.every((week) => week === expectedWeek), "visible report labels must consistently use the ISO week number"],
     [!/\breceipt lines\b/i.test(source), "subtotal wording must use payment lines, not receipt lines"],
-    [embeddedStylesheet === expectedStylesheet, "embedded stylesheet must match templates/report.css; regenerate the report"],
-    [embeddedBehavior === expectedBehavior, "embedded behavior must match templates/report.js; regenerate the report"],
+    [!usesCurrentTemplate || embeddedStylesheet === expectedStylesheet, "embedded stylesheet must match templates/report.css; regenerate the report"],
+    [!usesCurrentTemplate || embeddedBehavior === expectedBehavior, "embedded behavior must match templates/report.js; regenerate the report"],
     [/Content-Security-Policy/i.test(source), "must include a Content Security Policy"],
     [/src=["']data:image\/png;base64,/i.test(source), "must embed the logo"],
     [/TOP DEVELOPMENT SERVICES GUINEA SARLU/.test(source), "must show the full company name"],
@@ -212,6 +311,8 @@ for (const file of files) {
     ],
     [/\.sort\(/.test(source), "must retain descending sorting"],
     [!requiresPaymentMode || detailTablesAreUsdDescending(source), "detail tables must be stored in descending USD order"],
+    [prf295BreakdownIsValid(source), "PRF 295 must use one counted parent row plus four non-counted vessel breakdown rows"],
+    [!/TDSG-2026-08-295/.test(source) || usesCurrentTemplate, "PRF 295 report must use the current grouped-row template"],
     [/overflow-x:\s*auto/.test(source), "must retain mobile table scrolling"],
   ];
 
@@ -219,12 +320,16 @@ for (const file of files) {
     if (!passed) failures.push(`${name}: ${message}`);
   });
 
-  const modes = Array.from(
-    source.matchAll(/<tr>([\s\S]*?)<\/tr>/gi),
-    (match) => Array.from(match[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)),
-  )
-    .filter((cells) => cells.length === 10)
-    .map((cells) => plainText(cells[3][1]));
+  const detailRows = Array.from(
+    source.matchAll(/<tr\b([^>]*)>([\s\S]*?)<\/tr>/gi),
+    (match) => ({
+      attributes: match[1],
+      cells: Array.from(match[2].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)),
+    }),
+  );
+  const modes = detailRows
+    .filter(({ attributes, cells }) => cells.length === 10 && !/\b(?:tot|breakdown-row|breakdown-note)\b/.test(attributes))
+    .map(({ cells }) => plainText(cells[3][1]));
   if (
     requiresPaymentMode &&
     modes.some(
@@ -236,12 +341,11 @@ for (const file of files) {
     failures.push(`${name}: payment mode must identify OCBC, Ecobank, Rouge POB, or the petty-cash custodian`);
   }
 
-  const originalAmountCells = Array.from(
-    source.matchAll(/<tr>([\s\S]*?)<\/tr>/gi),
-    (match) => Array.from(match[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)),
-  )
-    .filter((cells) => cells.length === 9 || cells.length === 10)
-    .map((cells) => plainText(cells[cells.length - 3][1]));
+  const originalAmountCells = detailRows
+    .filter(({ attributes, cells }) =>
+      (cells.length === 9 || cells.length === 10) && !/\b(?:tot|breakdown-note)\b/.test(attributes),
+    )
+    .map(({ cells }) => plainText(cells[cells.length - 3][1]));
   if (originalAmountCells.some((value) => !/^(?:GNF|USD|EUR)\s+[\d,.]+(?:\s+\+\s+(?:GNF|USD|EUR)\s+[\d,.]+)?$/.test(value))) {
     failures.push(`${name}: every detail row must show its original currency code and amount`);
   }
@@ -256,7 +360,7 @@ for (const file of files) {
   const rougeSummary = summaryAmount(source, "rouge-total");
   const weekTotal = summaryAmount(source, "grand");
   const tdsgSubtotal = tableSubtotal(source, "TDSG subtotal");
-  const rougeSubtotal = tableSubtotal(source, "Rouge POB subtotal");
+  const rougeSubtotal = tableSubtotal(source, "Rouge POB (?:subtotal|total)");
 
   if (tdsgSummary === null || tdsgSummary !== tdsgSubtotal) {
     failures.push(`${name}: TDSG summary does not match its table subtotal`);

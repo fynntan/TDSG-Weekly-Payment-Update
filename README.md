@@ -68,6 +68,7 @@ If the weekly Excel file conflicts with the approved PRF, invoice, or remittance
 - `Payee / Supplier` shows the actual recipient or supplier. For petty-cash payments, the staff custodian belongs in `Payment Mode`, not in the supplier field; use `Various [type] Suppliers` when one PRF consolidates multiple vendors.
 - TDSG subtotal, Rouge POB subtotal, and Week Total must all be present and reconcile.
 - Subtotal counts refer to payment lines.
+- When one Rouge POB PRF contains multiple vessel cost lines, show one bold parent payment row followed by numbered supporting rows. Leave the supporting rows' PRF, date, mode, payee, category, and exchange-rate cells blank; retain normal table sizing and spacing, using only lighter muted italic text to distinguish them. Supporting rows must never be counted again in subtotals, summaries, reconciliation extracts, or sorting totals.
 - Every report is standalone: the logo, stylesheet, and behavior are embedded. External fonts and network resources are not used.
 - A restrictive Content Security Policy permits only the embedded image, style, and script required by the report.
 

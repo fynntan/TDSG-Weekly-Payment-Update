@@ -40,7 +40,7 @@ Example: `TDSG-2026-08-282` (GMS), GNF 177,826,148, was requested on 5 August 20
 - The actual supplier belongs in `Payee / Supplier`; a cash custodian belongs in `Payment Mode`.
 - Vessel, shipment, and bill-of-lading names belong in `Purpose`, not `Payee / Supplier`; use the invoice or receipt issuer as the payee.
 - One remittance covering multiple invoices must reconcile to the combined invoices.
-- When one PRF covers several separately supported shipments, split it into shipment-level report rows while keeping the PRF total reconciled and counting the PRF once in monthly controls.
+- When one Rouge POB PRF covers several separately supported shipments, show one counted parent payment row and subordinate numbered breakdown rows. Keep PRF, date, mode, payee, category, and exchange rate blank in the child rows; use the normal table size/spacing with only lighter muted italic text. The child rows are already included in the parent and must never be counted again in report totals, sorting totals, or monthly controls.
 - Reconcile only through the stated report end date.
 
 ## Pending-bank-deduction register
@@ -94,8 +94,8 @@ ISO Week 35, 24–30 August 2026:
 
 - PRF `TDSG-2026-08-295` is a completed Rouge POB payment dated 27 August 2026 based on signed and stamped supplier receipts.
 - Its actual payee is `Mohzain Transit-Transport-Logistics`; Cali, Winning Ocean, and Winning Wave are shipment references.
-- Split PRF 295 into four report lines: WA2649SH301 GNF 42,805,000; WK2657SH300 GNF 18,626,946; HLCUHAM260530640 GNF 18,547,973; and WA2644SH303 GNF 11,138,509.
-- The four payment lines reconcile to GNF 91,118,428 and USD 10,372 at `1 : 8785`; Week 35 total is USD 89,086.
+- Break PRF 295 into four subordinate vessel cost lines beneath its counted parent: WA2649SH301 GNF 42,805,000; WK2657SH300 GNF 18,626,946; HLCUHAM260530640 GNF 18,547,973; and WA2644SH303 GNF 11,138,509.
+- The single PRF parent row reconciles to GNF 91,118,428 and USD 10,372 at `1 : 8785`; its four subordinate vessel cost lines are informational breakdowns already included in the parent. Week 35 total is USD 89,086.
 - Keep the repository report and the operational OneDrive HTML synchronized; Finance normally opens the OneDrive copy.
 
 China PRF identifier correction:

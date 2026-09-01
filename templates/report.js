@@ -22,18 +22,35 @@
 
         document.querySelectorAll(".tw tbody").forEach(function (tbody) {
           var total = tbody.querySelector(".tot");
-          var rows = Array.prototype.slice.call(
-            tbody.querySelectorAll("tr:not(.tot)"),
+          var parents = Array.prototype.slice.call(
+            tbody.querySelectorAll("tr:not(.tot):not(.breakdown-row)"),
           );
+          var blocks = parents.map(function (parent) {
+            var rows = [parent];
+            var sibling = parent.nextElementSibling;
+            while (sibling &&
+              sibling.classList.contains("breakdown-row")) {
+              rows.push(sibling);
+              sibling = sibling.nextElementSibling;
+            }
+            return { parent: parent, rows: rows };
+          });
 
-          rows
+          blocks
             .sort(function (a, b) {
-              return numberFrom(b.cells[8].textContent) -
-                numberFrom(a.cells[8].textContent);
+              return numberFrom(b.parent.cells[8].textContent) -
+                numberFrom(a.parent.cells[8].textContent);
             })
-            .forEach(function (row, index) {
-              row.cells[0].textContent = String(index + 1);
-              tbody.insertBefore(row, total);
+            .forEach(function (block, index) {
+              block.parent.cells[0].textContent = String(index + 1);
+              var childIndex = 0;
+              block.rows.forEach(function (row) {
+                if (row.classList.contains("breakdown-row")) {
+                  childIndex += 1;
+                  row.cells[0].textContent = String(index + 1) + "." + childIndex;
+                }
+                tbody.insertBefore(row, total);
+              });
             });
         });
 

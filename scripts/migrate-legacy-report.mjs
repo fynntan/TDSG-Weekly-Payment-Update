@@ -173,6 +173,31 @@ function originalAmountMarkup(row) {
   return textCell(originalAmount(row).display).replace(/ \+ /g, "<br />+ ");
 }
 
+function groupedOriginalAmount(rows) {
+  const totals = new Map();
+  rows.forEach((row) => {
+    const original = originalAmount(row);
+    totals.set(original.code, (totals.get(original.code) || 0) + number(original.display));
+  });
+  return Array.from(totals, ([code, value]) => `${code} ${format(value)}`).join("<br />+ ");
+}
+
+function groupedExchangeRate(rows) {
+  const rates = [...new Set(rows.map(exchangeRate))];
+  return rates.length === 1 ? rates[0] : "—";
+}
+
+function reportGroups(rows, isRouge) {
+  if (!isRouge) return rows.map((row) => ({ rows: [row] }));
+  const groups = new Map();
+  rows.forEach((row) => {
+    const key = row.prf;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(row);
+  });
+  return Array.from(groups.values(), (groupRows) => ({ rows: groupRows }));
+}
+
 function rowsFrom(tableHtml) {
   return Array.from(tableHtml.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi))
     .map((match) => match[1])
@@ -197,16 +222,21 @@ function rowsFrom(tableHtml) {
 
 function tableMarkup(rows, label, isRouge = false) {
   const totalUsd = rows.reduce((sum, row) => sum + number(row.usd), 0);
-  const sortedRows = rows
-    .map((row, sourceIndex) => ({ row, sourceIndex }))
+  const sortedGroups = reportGroups(rows, isRouge)
+    .map((group, sourceIndex) => ({
+      ...group,
+      sourceIndex,
+      totalUsd: group.rows.reduce((sum, row) => sum + number(row.usd), 0),
+    }))
     .sort((left, right) =>
-      number(right.row.usd) - number(left.row.usd) ||
+      right.totalUsd - left.totalUsd ||
       left.sourceIndex - right.sourceIndex,
-    )
-    .map(({ row }) => row);
-  const rowsHtml = sortedRows
-    .map(
-      (row, index) => `              <tr>
+    );
+  const rowsHtml = sortedGroups
+    .map((group, index) => {
+      const [row] = group.rows;
+      if (group.rows.length === 1) {
+        return `              <tr>
                 <td>${index + 1}</td>
                 <td>${textCell(row.prf)}</td>
                 <td>${textCell(row.date)}</td>
@@ -217,10 +247,49 @@ function tableMarkup(rows, label, isRouge = false) {
                 <td class="num">${originalAmountMarkup(row)}</td>
                 <td class="num">${textCell(row.usd)}</td>
                 <td>${textCell(exchangeRate(row))}</td>
-              </tr>`,
-    )
+              </tr>`;
+      }
+
+      const children = group.rows.map((child, childIndex) => {
+        const childPurpose = normalizedPurpose(child).replace(
+          /^DDI and customs-clearance service fees\s*-\s*/i,
+          "",
+        );
+        return `              <tr class="breakdown-row">
+                <td>${index + 1}.${childIndex + 1}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>${textCell(childPurpose)}</td>
+                <td></td>
+                <td class="num">${originalAmountMarkup(child)}</td>
+                <td class="num">${textCell(child.usd)}</td>
+                <td></td>
+              </tr>`;
+      }).join("\n");
+      return `              <tr class="payment-parent">
+                <td>${index + 1}</td>
+                <td>${textCell(row.prf)}</td>
+                <td>${textCell(row.date)}</td>
+                <td>${paymentMode(row, isRouge)}</td>
+                <td><b>${textCell(normalizedPayee(row))}</b></td>
+                <td>DDI and customs-clearance fees &mdash; ${group.rows.length} underlying vessel cost lines</td>
+                <td><span class="tag ${categoryClass(row.category)}">${textCell(row.category)}</span></td>
+                <td class="num">${groupedOriginalAmount(group.rows)}</td>
+                <td class="num">${format(group.totalUsd)}</td>
+                <td>${textCell(groupedExchangeRate(group.rows))}</td>
+              </tr>
+${children}`;
+    })
     .join("\n");
-  const plural = sortedRows.length === 1 ? "payment" : "payments";
+  const plural = sortedGroups.length === 1 ? "payment" : "payments";
+  const totalRow = `<tr class="tot">
+                <td colspan="7">${label} subtotal &mdash; ${sortedGroups.length} ${plural}</td>
+                <td class="num"></td>
+                <td class="num">${format(totalUsd)}</td>
+                <td></td>
+              </tr>`;
 
   return `          <table>
             <thead>
@@ -230,12 +299,7 @@ function tableMarkup(rows, label, isRouge = false) {
             </thead>
             <tbody>
 ${rowsHtml}
-              <tr class="tot">
-                <td colspan="7">${label} subtotal &mdash; ${sortedRows.length} ${plural}</td>
-                <td class="num"></td>
-                <td class="num">${format(totalUsd)}</td>
-                <td></td>
-              </tr>
+              ${totalRow}
             </tbody>
           </table>`;
 }

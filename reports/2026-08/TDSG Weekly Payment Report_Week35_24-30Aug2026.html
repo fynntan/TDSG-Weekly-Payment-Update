@@ -11,6 +11,7 @@
     <title>TDSG Weekly Payment Report &mdash; Week 35 &middot; 24&ndash;30 August 2026</title>
     <style>
       :root {
+              --report-template-version: 2;
               --navy: #1c3a5e;
               --ink: #25221e;
               --muted: #6b655c;
@@ -238,6 +239,17 @@
               font-variant-numeric: tabular-nums;
             }
 
+            .payment-parent td,
+            .payment-parent td b {
+              font-size: 12px;
+              font-weight: 700;
+            }
+
+            .breakdown-row td {
+              color: #77736d;
+              font-style: italic;
+            }
+
             .tot td {
               border-top: 2px solid var(--navy);
               background: #dfe8f2;
@@ -448,11 +460,12 @@
         <div class="tw r"><table><thead><tr>
           <th>No</th><th>PRF No</th><th>Payment Date</th><th>Payment Mode</th><th>Payee / Supplier</th><th>Purpose</th><th>Category</th><th>Original Amount</th><th>USD</th><th>Ex. Rate</th>
         </tr></thead><tbody>
-          <tr><td>1</td><td>TDSG-2026-08-295</td><td>27/08/2026</td><td>Rouge POB</td><td><b>Mohzain Transit-Transport-Logistics</b></td><td>DDI and customs-clearance service fees - Winning Ocean (WA2649SH301)</td><td><span class="tag log">Other Purchase Costs</span></td><td class="num">GNF 42,805,000</td><td class="num">4,873</td><td>1 : 8785</td></tr>
-          <tr><td>2</td><td>TDSG-2026-08-295</td><td>27/08/2026</td><td>Rouge POB</td><td><b>Mohzain Transit-Transport-Logistics</b></td><td>DDI and customs-clearance service fees - Winning Wave (WK2657SH300)</td><td><span class="tag log">Other Purchase Costs</span></td><td class="num">GNF 18,626,946</td><td class="num">2,120</td><td>1 : 8785</td></tr>
-          <tr><td>3</td><td>TDSG-2026-08-295</td><td>27/08/2026</td><td>Rouge POB</td><td><b>Mohzain Transit-Transport-Logistics</b></td><td>DDI and customs-clearance service fees - Cali (HLCUHAM260530640)</td><td><span class="tag log">Other Purchase Costs</span></td><td class="num">GNF 18,547,973</td><td class="num">2,111</td><td>1 : 8785</td></tr>
-          <tr><td>4</td><td>TDSG-2026-08-295</td><td>27/08/2026</td><td>Rouge POB</td><td><b>Mohzain Transit-Transport-Logistics</b></td><td>DDI and customs-clearance service fees - Winning Ocean (WA2644SH303)</td><td><span class="tag log">Other Purchase Costs</span></td><td class="num">GNF 11,138,509</td><td class="num">1,268</td><td>1 : 8785</td></tr>
-          <tr class="tot"><td colspan="7">Rouge POB subtotal &mdash; 4 payment lines</td><td class="num"></td><td class="num">10,372</td><td></td></tr>
+          <tr class="payment-parent"><td>1</td><td>TDSG-2026-08-295</td><td>27/08/2026</td><td>Rouge POB</td><td><b>Mohzain Transit-Transport-Logistics</b></td><td>DDI and customs-clearance fees &mdash; 4 underlying vessel cost lines</td><td><span class="tag log">Other Purchase Costs</span></td><td class="num">GNF 91,118,428</td><td class="num">10,372</td><td>1 : 8785</td></tr>
+          <tr class="breakdown-row"><td>1.1</td><td></td><td></td><td></td><td></td><td>Winning Ocean (WA2649SH301)</td><td></td><td class="num">GNF 42,805,000</td><td class="num">4,873</td><td></td></tr>
+          <tr class="breakdown-row"><td>1.2</td><td></td><td></td><td></td><td></td><td>Winning Wave (WK2657SH300)</td><td></td><td class="num">GNF 18,626,946</td><td class="num">2,120</td><td></td></tr>
+          <tr class="breakdown-row"><td>1.3</td><td></td><td></td><td></td><td></td><td>Cali (HLCUHAM260530640)</td><td></td><td class="num">GNF 18,547,973</td><td class="num">2,111</td><td></td></tr>
+          <tr class="breakdown-row"><td>1.4</td><td></td><td></td><td></td><td></td><td>Winning Ocean (WA2644SH303)</td><td></td><td class="num">GNF 11,138,509</td><td class="num">1,268</td><td></td></tr>
+          <tr class="tot"><td colspan="7">Rouge POB subtotal &mdash; 1 payment</td><td class="num"></td><td class="num">10,372</td><td></td></tr>
         </tbody></table></div>
       </section>
       <footer>Weekly Payment Report &middot; Week 35 &middot; 24 &ndash; 30 August 2026 &middot; Prepared by Finance Department. GNF payments are converted to USD using the BCRG rate applicable on each payment date.</footer>
@@ -481,18 +494,35 @@
 
               document.querySelectorAll(".tw tbody").forEach(function (tbody) {
                 var total = tbody.querySelector(".tot");
-                var rows = Array.prototype.slice.call(
-                  tbody.querySelectorAll("tr:not(.tot)"),
+                var parents = Array.prototype.slice.call(
+                  tbody.querySelectorAll("tr:not(.tot):not(.breakdown-row)"),
                 );
+                var blocks = parents.map(function (parent) {
+                  var rows = [parent];
+                  var sibling = parent.nextElementSibling;
+                  while (sibling &&
+                    sibling.classList.contains("breakdown-row")) {
+                    rows.push(sibling);
+                    sibling = sibling.nextElementSibling;
+                  }
+                  return { parent: parent, rows: rows };
+                });
 
-                rows
+                blocks
                   .sort(function (a, b) {
-                    return numberFrom(b.cells[8].textContent) -
-                      numberFrom(a.cells[8].textContent);
+                    return numberFrom(b.parent.cells[8].textContent) -
+                      numberFrom(a.parent.cells[8].textContent);
                   })
-                  .forEach(function (row, index) {
-                    row.cells[0].textContent = String(index + 1);
-                    tbody.insertBefore(row, total);
+                  .forEach(function (block, index) {
+                    block.parent.cells[0].textContent = String(index + 1);
+                    var childIndex = 0;
+                    block.rows.forEach(function (row) {
+                      if (row.classList.contains("breakdown-row")) {
+                        childIndex += 1;
+                        row.cells[0].textContent = String(index + 1) + "." + childIndex;
+                      }
+                      tbody.insertBefore(row, total);
+                    });
                   });
               });
 

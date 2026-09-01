@@ -169,7 +169,7 @@ async function htmlPayments() {
     const source = await fs.readFile(path.join(reportDirectory, file), "utf8");
     const week = /Report_Week(\d+)/i.exec(file)?.[1] || "";
     for (const match of source.matchAll(/<tr(?:\s[^>]*)?>([\s\S]*?)<\/tr>/gi)) {
-      if (/class=["']tot["']/.test(match[0])) continue;
+      if (/class=["'][^"']*\b(?:tot|breakdown-row|breakdown-note)\b[^"']*["']/.test(match[0])) continue;
       const cells = Array.from(match[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi), (cell) => plainText(cell[1]));
       if (cells.length !== 10 || !/^(?:TDSG|TGM)/.test(cells[1])) continue;
       rows.push({
@@ -416,7 +416,7 @@ summary.getRange("B5:B10").formulas = [
 ];
 summary.getRange("D4:E4").values = [["HTML Control", "Count"]];
 styleHeader(summary.getRange("D4:E4"));
-summary.getRange("D5:D10").values = [["Current HTML payment lines"], ["August-raised PRFs captured"], ["Prior-month PRFs paid in August"], ["Missing due HTML items"], ["Week 35 items awaiting report"], ["Open follow-up items"]];
+summary.getRange("D5:D10").values = [["Counted HTML payment rows"], ["August-raised PRFs captured"], ["Prior-month PRFs paid in August"], ["Missing due HTML items"], ["Week 35 items awaiting report"], ["Open follow-up items"]];
 summary.getRange("E5:E10").formulas = [
   [`=SUM('Combined Register'!$Z$5:$Z$${registerEnd})`],
   [`=SUMIFS('Combined Register'!$Y$5:$Y$${registerEnd},'Combined Register'!$A$5:$A$${registerEnd},"August PRF raised",'Combined Register'!$S$5:$S$${registerEnd},"Yes")`],

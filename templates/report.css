@@ -1,5 +1,6 @@
 
       :root {
+        --report-template-version: 2;
         --navy: #1c3a5e;
         --ink: #25221e;
         --muted: #6b655c;
@@ -225,6 +226,17 @@
         text-align: right;
         white-space: nowrap;
         font-variant-numeric: tabular-nums;
+      }
+
+      .payment-parent td,
+      .payment-parent td b {
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .breakdown-row td {
+        color: #77736d;
+        font-style: italic;
       }
 
       .tot td {
