@@ -8,6 +8,8 @@
 node_modules/
 tmp/
 outputs/
+input/
+output/
 
 # Temporary and operating-system files
 *.tmp

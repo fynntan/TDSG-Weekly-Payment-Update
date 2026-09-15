@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { SpreadsheetFile, Workbook } from "@oai/artifact-tool";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const outputDirectory = path.join(repositoryRoot, "outputs", "august-2026-prf-reconciliation");
+const outputDirectory = path.join(repositoryRoot, "output", "august-2026-prf-reconciliation");
 const outputPath = path.join(outputDirectory, "TDSG August 2026 PRF Clearance and HTML Reconciliation.xlsx");
 const reportDirectory = path.join(repositoryRoot, "reports", "2026-08");
 const asOfDate = excelDate(2026, 8, 27);
@@ -64,7 +64,7 @@ function validateSourceData(htmlRows) {
 }
 
 async function prepareOutputDirectory() {
-  const expectedParent = path.join(repositoryRoot, "outputs");
+  const expectedParent = path.join(repositoryRoot, "output");
   if (path.dirname(outputDirectory) !== expectedParent || path.basename(outputDirectory) !== "august-2026-prf-reconciliation") {
     throw new Error(`Refusing to clean unexpected output directory: ${outputDirectory}`);
   }
