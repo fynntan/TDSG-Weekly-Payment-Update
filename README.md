@@ -27,6 +27,16 @@ This repository contains the reviewed weekly payment reports and the reusable pr
 
 The builder has no third-party dependencies. Node.js is the only requirement.
 
+## Public weekly URL rotation
+
+Each newly completed week must be published under a new token-only
+`venus.milolab.io` URL. The GabBuild publisher must be run with
+`--series tdsg-weekly-payments --gate token-only --supersede-previous` and an
+exact release approval containing `supersedePrevious: true`. That verified release
+registers the new URL and revokes the previous TDSG weekly-payment URL atomically;
+the old link then returns HTTP 410 and must not be reused or updated for the new week.
+Send the new URL only after the Venus deployment and cache-busted integrity probe pass.
+
 Report filenames and visible labels use continuous ISO calendar week numbers. They do not restart at Week 1 each month. For example, the report ending 30 August 2026 is `Week35`, followed by `Week36` for the next calendar week.
 
 ## Source documents and folders
