@@ -36,6 +36,10 @@ exact release approval containing `supersedePrevious: true`. That verified relea
 registers the new URL and revokes the previous TDSG weekly-payment URL atomically;
 the old link then returns HTTP 410 and must not be reused or updated for the new week.
 Send the new URL only after the Venus deployment and cache-busted integrity probe pass.
+An explicitly approved correction to the current viewer may keep its existing URL,
+provided its asset and registered SHA are updated together and the viewer remains
+capped at that approved week. This exception does not apply when a new week's
+report is added.
 
 Report filenames and visible labels use continuous ISO calendar week numbers. They do not restart at Week 1 each month. For example, the report ending 30 August 2026 is `Week35`, followed by `Week36` for the next calendar week.
 
