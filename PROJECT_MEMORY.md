@@ -69,6 +69,14 @@ Keep an online payment in the register until bank deduction is confirmed. For a 
 8. Run `npm run check`.
 9. Review desktop and iPhone portrait/landscape layouts.
 10. Reconcile category totals, TDSG subtotal, Rouge POB subtotal, and Week Total before committing.
+11. Synchronize the corrected HTML to its Finance monthly folder using `npm run report:sync -- <repository-report> <monthly-folder>` (preview), then `--write`. The command preserves a private backup and verifies exact equality; Finance's monthly copy must not be left behind the published report.
+
+## Week 42 footer correction — 26 October 2026
+
+Remove the sentence about PRF TDSG-2026-10-339's GNF 400,000,000 pending component
+from the report footer. This is a wording-only change: do not add the pending
+component to paid totals or alter completed-payment evidence rules. Keep the
+existing public viewer URL for this correction and synchronize the monthly HTML.
 
 ## Locked report standard
 

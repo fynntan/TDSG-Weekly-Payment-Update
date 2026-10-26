@@ -308,6 +308,7 @@ for (const file of files) {
     [/font-variant-numeric:\s*tabular-nums/.test(source), "numeric values must retain decimal-position alignment"],
     [/td:nth-child\(8\)[\s\S]*td:nth-child\(9\)[\s\S]*text-align:\s*right/.test(source), "Original Amount and USD columns must be explicitly right-aligned"],
     [/GNF payments are converted to USD using the BCRG rate applicable on each payment date\./.test(source), "footer must state the GNF conversion basis"],
+    [!/The GNF 400,000,000 component of TDSG-2026-10-339 remains pending bank deduction and is excluded from the paid-week total\./.test(source), "must not restore the removed Week 42 pending-deduction footer note"],
     [!/Original-currency amounts are shown in the detail table/.test(source), "footer must remain concise"],
     [!/USD payments retain their original amount/.test(source), "footer must remain concise"],
     [!/USD\/EUR payments carry no GNF\/rate/.test(source), "footer must not retain the obsolete GNF/rate wording"],

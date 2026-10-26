@@ -27,6 +27,18 @@ This repository contains the reviewed weekly payment reports and the reusable pr
 
 The builder has no third-party dependencies. Node.js is the only requirement.
 
+After preparing or correcting a report, synchronize the operational monthly-folder
+copy as well. Preview the exact source and destination first:
+
+```powershell
+npm run report:sync -- "reports/YYYY-MM/report.html" "path/to/Finance/monthly-folder"
+```
+
+Review the destination, then repeat with `--write`. The command runs all report
+checks, preserves the previous monthly copy privately under
+`output/monthly-sync-backups/`, copies the checked report, and verifies byte-for-byte
+equality. Do not commit private backups. Do not leave Finance using an older HTML.
+
 ## Public weekly URL rotation
 
 Each newly completed week must be published under a new token-only

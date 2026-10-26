@@ -5,6 +5,7 @@
   "scripts": {
     "report:prepare": "node scripts/prepare-report.mjs",
     "check": "node scripts/verify-reports.mjs",
+    "report:sync": "node scripts/sync-monthly-report.mjs",
     "preview": "node scripts/serve-reports.mjs"
   }
 }
