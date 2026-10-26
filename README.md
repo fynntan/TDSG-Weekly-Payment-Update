@@ -19,7 +19,7 @@ This repository contains the reviewed weekly payment reports and the reusable pr
    npm run check
    ```
 
-   GitHub Actions runs the same check automatically on every push and pull request.
+   GitHub Actions runs the same check automatically on every push and pull request. The check also rejects a missing week inside the stored report range, so a gap such as Week 35 followed by Week 40 cannot be published unnoticed.
 
 4. Review the output on desktop and on an iPhone-sized viewport in both portrait and landscape orientation.
 
@@ -89,6 +89,7 @@ If the weekly Excel file conflicts with the approved PRF, invoice, or remittance
 - `scripts/prepare-report.mjs` is the required entry point for each new report; it detects the input format, applies the current templates, and verifies the repository.
 - `scripts/standardize-report.mjs` applies both templates to a report.
 - `scripts/verify-reports.mjs` checks structure, security, mobile scrolling, labels, total reconciliation, and exact agreement with both shared templates.
+- The public viewer must be capped at its approved latest week. A later GitHub report appears only after a replacement public URL is released and the earlier URL is withdrawn.
 
 Change the templates and checks together when the approved report standard changes. Do not hand-edit a generated report without updating the reusable source of truth.
 

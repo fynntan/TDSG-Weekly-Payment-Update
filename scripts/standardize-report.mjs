@@ -11,6 +11,57 @@ function fail(message) {
   process.exit(1);
 }
 
+function plainText(html) {
+  return String(html)
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&(?:nbsp|mdash|middot);/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function usdAmount(row) {
+  const cells = Array.from(row.matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi));
+  return cells.length === 10
+    ? Number(plainText(cells[8][1]).replace(/[^\d.-]/g, "")) || 0
+    : 0;
+}
+
+function rowClass(row) {
+  return /<tr\b[^>]*class=["']([^"']*)["']/i.exec(row)?.[1] || "";
+}
+
+function renumberRow(row, number) {
+  return row
+    .replace(/\s+data-sort-rank=["'][^"']*["']/i, "")
+    .replace(/<td\b([^>]*)>[\s\S]*?<\/td>/i, `<td$1>${number}</td>`);
+}
+
+function sortDetailBodies(html) {
+  return html.replace(/<tbody>([\s\S]*?)<\/tbody>/gi, (body, content) => {
+    const rows = Array.from(content.matchAll(/<tr\b[^>]*>[\s\S]*?<\/tr>/gi), (match) => match[0]);
+    const total = rows.find((row) => /\btot\b/i.test(rowClass(row)));
+    const blocks = [];
+
+    for (const row of rows) {
+      const classes = rowClass(row);
+      if (/\btot\b/i.test(classes)) continue;
+      if (/\bbreakdown-row\b/i.test(classes) && blocks.length) {
+        blocks.at(-1).children.push(row);
+        continue;
+      }
+      blocks.push({ parent: row, children: [], usd: usdAmount(row), sourceIndex: blocks.length });
+    }
+
+    blocks.sort((left, right) => right.usd - left.usd || left.sourceIndex - right.sourceIndex);
+    const sortedRows = blocks.flatMap((block, index) => [
+      renumberRow(block.parent, index + 1),
+      ...block.children.map((row, childIndex) => renumberRow(row, `${index + 1}.${childIndex + 1}`)),
+    ]);
+    if (total) sortedRows.push(total);
+    return `<tbody>\n${sortedRows.join("\n")}\n</tbody>`;
+  });
+}
+
 const inputArgument = process.argv[2];
 const outputArgument = process.argv[3] || inputArgument;
 
@@ -61,7 +112,7 @@ const nonEmptyLines = bodyLines.filter((line) => line.trim());
 const commonIndent = Math.min(
   ...nonEmptyLines.map((line) => line.match(/^\s*/)[0].length),
 );
-const cleanBody = normalizeReportWeek(bodyLines
+const normalizedBody = normalizeReportWeek(bodyLines
   .map((line) => line.slice(Math.min(commonIndent, line.length)).trimEnd())
   .join("\n")
   .trim()
@@ -74,6 +125,7 @@ const cleanBody = normalizeReportWeek(bodyLines
     "$1<br />+ $2",
   )
   .replace(/\breceipt lines\b/gi, "payment lines"), week);
+const cleanBody = sortDetailBodies(normalizedBody);
 
 if (!/class=["']top["']/.test(cleanBody)) {
   fail("The input is missing the report header (.top).");

@@ -243,6 +243,27 @@ if (files.length === 0) {
   process.exit(1);
 }
 
+const storedWeeks = Array.from(
+  new Set(
+    files
+      .map((file) => filenameWeek(path.basename(file)))
+      .filter(Number.isFinite),
+  ),
+).sort((a, b) => a - b);
+
+if (storedWeeks.length > 1) {
+  const knownWeeks = new Set(storedWeeks);
+  const missingWeeks = [];
+  for (let week = storedWeeks[0]; week <= storedWeeks.at(-1); week += 1) {
+    if (!knownWeeks.has(week)) missingWeeks.push(week);
+  }
+  if (missingWeeks.length) {
+    failures.push(
+      `report sequence is incomplete; missing ${missingWeeks.map((week) => `Week ${week}`).join(", ")}`,
+    );
+  }
+}
+
 for (const file of files) {
   const source = fs.readFileSync(file, "utf8");
   const name = path.relative(repositoryRoot, file);
