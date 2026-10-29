@@ -84,6 +84,7 @@ If the weekly Excel file conflicts with the approved PRF, invoice, or remittance
 - Tables use identical column widths and horizontal scrolling on narrow screens, so no data is hidden.
 - The `Payment Mode` column follows `Payment Date` and uses `OCBC`, `Ecobank`, `Petty Cash - [custodian]`, or `Rouge POB`.
 - Table content is vertically centered. Ordinary payees, categories, and amounts use regular weight; headings and total rows are bold.
+- Table rows have matching 16 px outer cell insets, and mobile pages retain equal 16 px left/right gutters. Both payment tables use the same spacing rules.
 - Category pills retain distinct colors through the classes `staff`, `site`, `office`, `comm`, `parts`, `log`, and `ga`.
 - Summary categories and detail rows display from highest to lowest USD amount. Subtotals remain at the bottom.
 - The exchange-rate column is titled `Ex. Rate`; values display as `1 : 8745`, while USD/EUR-only payments display an em dash.

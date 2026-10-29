@@ -190,6 +190,14 @@
         vertical-align: middle;
       }
 
+      tr > :first-child {
+        padding-left: 16px;
+      }
+
+      tr > :last-child {
+        padding-right: 16px;
+      }
+
       th {
         background: var(--navy);
         color: var(--white);
@@ -357,7 +365,7 @@
         }
 
         .w {
-          padding: 16px 12px 22px;
+          padding: 16px 16px 22px;
         }
 
         h1 {

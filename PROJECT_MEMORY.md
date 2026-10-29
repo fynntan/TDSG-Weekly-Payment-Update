@@ -89,6 +89,7 @@ existing public viewer URL for this correction and synchronize the monthly HTML.
 - Detail and summary rows are stored from highest to lowest USD amount; subtotal rows remain last.
 - TDSG subtotal, Rouge POB subtotal, category summary, and Week Total must reconcile.
 - The report must remain standalone, secure, and horizontally scrollable on narrow screens.
+- Keep the table's first-cell left inset and last-cell right inset equal at 16 px; mobile page gutters are also 16 px on both sides. Apply these shared template rules to each new report.
 
 ## August 2026 correction reference
 
