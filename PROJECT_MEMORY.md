@@ -1,6 +1,14 @@
 # TDSG Weekly Payment Update — Project Memory
 
-Last updated: 2026-09-01 (Asia/Singapore)
+Last updated: 2026-11-14 (Asia/Singapore)
+
+## Week 45 import and publication — 14 November 2026
+
+- The colleague's Week 45 HTML for 2–8 November 2026 is filed under `reports/2026-11/TDSG Weekly Payment Report_Week45_02-08Nov2026.html`.
+- Its SHA-256 is `3093880423ea32930919075c68ce5432eb8b8cd8d7528d2dd0029ca8e688ce7f`; the filed HTML exactly matches the supplied source. This was a report import, not a new audit of the payment evidence.
+- All 17 weekly reports passed repository validation. The published viewer defaults to Week 45 and retains prior TDSG reports and the June–October 2026 TGM reports.
+- Operational publication, retired-link verification, and WhatsApp delivery details are kept privately in `input/handoff/2026-11-14-week45.json` and the referenced files under `output/`. Keep these records and chat attachments out of Git.
+- The source GitHub repository is public. Publishing there requires explicit authorization to disclose the payment report publicly; the private viewer publication is separate.
 
 ## Purpose
 

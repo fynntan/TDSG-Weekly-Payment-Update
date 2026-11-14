@@ -5,6 +5,7 @@
 
 # Local Codex attachments and dependencies
 .codex-remote-attachments/
+.codex-attachments/
 node_modules/
 tmp/
 outputs/
