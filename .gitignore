@@ -8,6 +8,7 @@
 .codex-attachments/
 node_modules/
 tmp/
+work/
 outputs/
 input/
 output/

@@ -1,6 +1,16 @@
 # TDSG Weekly Payment Update — Project Memory
 
-Last updated: 2026-11-14 (Asia/Singapore)
+Last updated: 2026-11-16 (Asia/Singapore)
+
+## Standing workflow — 16 November 2026
+
+- The app automation runs Tuesday at 10:00 am GMT+8 for the previous Monday–Sunday. Verify its actual next timestamp in Singapore time after changes; the first setup had an eight-hour scheduling error.
+- Compile the weekly payment Excel when no existing list is available. Its absence alone is not a missing external source; the underlying completed-payment evidence is still required.
+- Check both the operational OneDrive folders and the authorized Venus mailbox. Recent statements and cashbooks may be under `Daily Bank`, and email attachments may resolve documents missing from the PRF folder. Filenames and upload dates do not establish transaction coverage.
+- The latest URL instruction is a **new weekly token-only URL with old weekly links disabled**, superseding the earlier request to reuse a fixed URL. Retain history inside the new viewer and follow the verified publisher release process.
+- Each run sends either the verified new report URL or a specific missing-items list through both configured WhatsApp sender–recipient pairs. No HTML attachments. Verify each route independently, report failures, and allow a final report link after an earlier missing-items notice.
+- The exact routes, account checks, source review, and email provenance are private under `output/week46-review/`. Do not copy contact numbers, mailbox exports, delivery receipts, or one-off intake scripts into Git. See README.md for the full operating rules.
+- Week 46 remains under review; the private review record is not a completed report or evidence of publication or delivery.
 
 ## Week 45 import and publication — 14 November 2026
 
@@ -23,6 +33,7 @@ This repository is the working home and source of truth for TDSG weekly payment 
 - Payment requests: `Payment Request`
 - Bank statements: `Cash & Bank Records\Bank Statement\2026`
 - Weekly reports and pending register: `Weekly Payment Approval Lists\2026`
+- Recent daily evidence: `Daily Bank\2026\YYYYMMDD`; verify document coverage inside each file.
 
 ## Governing rule: completed payment evidence controls inclusion
 
@@ -41,7 +52,8 @@ Example: `TDSG-2026-08-282` (GMS), GNF 177,826,148, was requested on 5 August 20
 
 ## Source-document rules
 
-- Start from the matching Excel file under `Weekly Payment Approval Lists\YYYY\MM.MMMYYYY`.
+- Use the matching Excel under `Weekly Payment Approval Lists\YYYY\MM.MMMYYYY` when present; otherwise compile the weekly list from verified source evidence. A self-prepared list is not independent proof of payment.
+- Search the authorized Venus mailbox for matching China PRFs and Rouge POB evidence before declaring documents missing. Preserve source-message and attachment provenance privately.
 - Verify each transaction against the corresponding China or Guinea PRF folder under `Payment Request` and its invoices, contracts, receipts, bills of lading, remittances, cash evidence, or Rouge POB evidence.
 - Use the completed-payment evidence for inclusion and payment date.
 - Use the PRF and underlying documents for payment mode, actual supplier/payee, purpose, contract/invoice reference, original amount, category, and supporting description.
@@ -67,8 +79,8 @@ Keep an online payment in the register until bank deduction is confirmed. For a 
 
 ## Required weekly workflow
 
-1. Confirm the weekly period and cutoff date.
-2. Review candidate PRFs and supporting documents.
+1. Confirm the previous ISO Monday–Sunday period and cutoff date for the Tuesday run.
+2. Use or compile the weekly Excel; review candidate PRFs, supporting documents, and relevant email attachments.
 3. Identify payment mode and expected paying bank/account.
 4. Verify completed payment through the cutoff using bank, cash, or Rouge POB evidence as applicable.
 5. Separate confirmed payments from pending online payments.
@@ -78,6 +90,7 @@ Keep an online payment in the register until bank deduction is confirmed. For a 
 9. Review desktop and iPhone portrait/landscape layouts.
 10. Reconcile category totals, TDSG subtotal, Rouge POB subtotal, and Week Total before committing.
 11. Synchronize the corrected HTML to its Finance monthly folder using `npm run report:sync -- <repository-report> <monthly-folder>` (preview), then `--write`. The command preserves a private backup and verifies exact equality; Finance's monthly copy must not be left behind the published report.
+12. Follow README.md's new-URL release and two-route delivery rules. If material sources or checks remain incomplete, send the specific missing-items list instead of a completed-report link.
 
 ## Week 42 footer correction — 26 October 2026
 
