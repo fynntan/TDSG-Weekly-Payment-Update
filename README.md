@@ -171,3 +171,7 @@ The workbook standard is intentionally simple:
 - generated workbooks and previews stay under `outputs/` and are not committed.
 
 Before distributing a refreshed workbook, review every highlighted row, confirm the summary counts, and use the formula-error scan and sheet previews produced by the builder.
+
+## WhatsApp notifications
+
+Use the reusable formatter and notification rules in [WHATSAPP_NOTIFICATIONS.md](WHATSAPP_NOTIFICATIONS.md).
