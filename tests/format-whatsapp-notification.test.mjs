@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { formatNotification } from '../scripts/format-whatsapp-notification.mjs';
 const base = { title: 'Payment review update', url: 'https://example.com/review', groups: [{ company: 'TDSG', items: [{ reference: 'TDSG-2026-11-370', detail: 'Office cash reimbursement — USD 25.' }] }, { company: 'KCP', items: ['Crane purchase.'] }] };
 test('bold headings, company spacing and exact financial/reference text', () => {
-  assert.equal(formatNotification(base)[0], '*Payment review update*\n\nhttps://example.com/review\n\n*TDSG*\n• TDSG-2026-11-370 — Office cash reimbursement — USD 25.\n\n*KCP*\n• Crane purchase.');
+  assert.equal(formatNotification(base)[0], '*Payment review update*\n\nhttps://example.com/review\n\n*TDSG*\n• TDSG-2026-11-370|Office cash reimbursement — USD 25.\n\n*KCP*\n• Crane purchase.');
 });
 test('long groups split with heading, numbering and URL on every part', () => {
   const messages = formatNotification({ ...base, groups: [{ company: 'TDSG', items: Array.from({ length: 30 }, (_, i) => `PRF ${i}: verified source details.`) }] }, 300);
@@ -20,9 +20,9 @@ test('rejects empty facts, injected headings, insecure URLs and overlong items',
 
 test('PRF entries retain reference, supplier, description and exact currency/amount', () => {
  const notice={...base,groups:[{company:'KCP',items:[{reference:'KCP-2026-11-002',supplier:'Hebei Gansibu',description:'100-tonne crane',amount:'USD 260,000'}]}]};
- assert.match(formatNotification(notice)[0], /KCP-2026-11-002 — Hebei Gansibu — 100-tonne crane — USD 260,000/);
+ assert.match(formatNotification(notice)[0], /KCP-2026-11-002\|Hebei Gansibu\|100-tonne crane\|USD 260,000/);
  delete notice.groups[0].items[0].supplier;
  assert.throws(()=>formatNotification(notice), /Supplier/);
  notice.groups[0].items[0].supplier='Supplier not verified';notice.groups[0].items[0].amount='Amount not verified';
- assert.match(formatNotification(notice)[0], /Supplier not verified — 100-tonne crane — Amount not verified/);
+ assert.match(formatNotification(notice)[0], /Supplier not verified\|100-tonne crane\|Amount not verified/);
 });

@@ -11,6 +11,9 @@ Input uses `title`, optional HTTPS `url`, and `groups`, each with a `company` an
 
 For every PRF or purchase item, use the structured form below so all four fields
 appear in this order: reference, short supplier name, description, amount/currency.
+Separate fields with `|` without spaces on either side, for example:
+`COMPANY-2026-001|Example supplier|Office supplies|USD 100`.
+Keep spaces within names and descriptions. Storage and usage alerts remain unchanged.
 
 ```json
 {
