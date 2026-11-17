@@ -16,3 +16,13 @@ test('storage and usage alerts preserve exact text', () => {
 test('rejects empty facts, injected headings, insecure URLs and overlong items', () => {
   for (const patch of [{title:'PAYMENT REVIEW UPDATE'}, {title:'Title\n*Injected*'}, {url:'http://example.com'}, {url:'https://user:secret@example.com'}, {groups:[]}, {groups:[{company:'KCP',items:['x'.repeat(4000)]}]}]) assert.throws(() => formatNotification({...base,...patch}));
 });
+
+
+test('PRF entries retain reference, supplier, description and exact currency/amount', () => {
+ const notice={...base,groups:[{company:'KCP',items:[{reference:'KCP-2026-11-002',supplier:'Hebei Gansibu',description:'100-tonne crane',amount:'USD 260,000'}]}]};
+ assert.match(formatNotification(notice)[0], /KCP-2026-11-002 — Hebei Gansibu — 100-tonne crane — USD 260,000/);
+ delete notice.groups[0].items[0].supplier;
+ assert.throws(()=>formatNotification(notice), /Supplier/);
+ notice.groups[0].items[0].supplier='Supplier not verified';notice.groups[0].items[0].amount='Amount not verified';
+ assert.match(formatNotification(notice)[0], /Supplier not verified — 100-tonne crane — Amount not verified/);
+});
