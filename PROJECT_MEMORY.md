@@ -1,6 +1,6 @@
 # TDSG Weekly Payment Update — Project Memory
 
-Last updated: 2026-11-16 (Asia/Singapore)
+Last updated: 2026-11-17 (Asia/Singapore)
 
 ## Standing workflow — 16 November 2026
 
@@ -8,7 +8,7 @@ Last updated: 2026-11-16 (Asia/Singapore)
 - Compile the weekly payment Excel when no existing list is available. Its absence alone is not a missing external source; the underlying completed-payment evidence is still required.
 - Check both the operational OneDrive folders and the authorized Venus mailbox. Recent statements and cashbooks may be under `Daily Bank`, and email attachments may resolve documents missing from the PRF folder. Filenames and upload dates do not establish transaction coverage.
 - The latest URL instruction is a **new weekly token-only URL with old weekly links disabled**, superseding the earlier request to reuse a fixed URL. Retain history inside the new viewer and follow the verified publisher release process.
-- Each run sends either the verified new report URL or a specific missing-items list through both configured WhatsApp sender–recipient pairs. No HTML attachments. Verify each route independently, report failures, and allow a final report link after an earlier missing-items notice.
+- Each run sends either the verified new report URL or a specific missing-items list through both configured WhatsApp sender–recipient pairs. Format both outcomes with `scripts/format-whatsapp-notification.mjs` under `WHATSAPP_NOTIFICATIONS.md`, sending all parts in order with per-part receipts. No HTML attachments. Verify each route independently, report failures, and allow a final report link after an earlier missing-items notice.
 - The exact routes, account checks, source review, and email provenance are private under `output/week46-review/`. Do not copy contact numbers, mailbox exports, delivery receipts, or one-off intake scripts into Git. See README.md for the full operating rules.
 - Week 46 remains under review; the private review record is not a completed report or evidence of publication or delivery.
 

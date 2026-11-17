@@ -15,12 +15,18 @@ WhatsApp routes:
 
 - **Complete:** prepare and verify the report, synchronize Finance's monthly
   copy, publish a new weekly URL, verify the release and retired links, then send
-  the new URL with its reporting period. Send no HTML or source-file attachments.
-- **Incomplete:** save the work privately and send a specific missing-items list.
+  the new URL with its reporting period using the approved notification format.
+  Send no HTML or source-file attachments.
+- **Incomplete:** save the work privately and send a specific missing-items list
+  using the same notification format.
   Identify the affected PRF or account, dates not covered, conflicting fields,
   sources already checked, and the document or confirmation needed. Distinguish
   missing evidence from an expired login or an unavailable service. Do not
   publish a partial report as complete or send an old URL as this week's report.
+
+Generate the exact message parts with the formatter in
+[WHATSAPP_NOTIFICATIONS.md](WHATSAPP_NOTIFICATIONS.md) before either outcome is
+sent. Send every part in order and retain a receipt for each part and route.
 
 Verify the exact sender account and recipient number separately for each route.
 Never substitute another sender. If one route fails, complete the available
@@ -50,7 +56,7 @@ this README records its operating rules, not a second scheduler.
    npm run check
    ```
 
-   GitHub Actions runs the same check automatically on every push and pull request. The check also rejects a missing week inside the stored report range, so a gap such as Week 35 followed by Week 40 cannot be published unnoticed.
+   This validates all reports and runs the notification formatter tests. GitHub Actions runs the same check automatically on every push and pull request. The check also rejects a missing week inside the stored report range, so a gap such as Week 35 followed by Week 40 cannot be published unnoticed.
 
 4. Review the output on desktop and on an iPhone-sized viewport in both portrait and landscape orientation.
 
