@@ -2,6 +2,15 @@
 
 Last updated: 2026-11-17 (Asia/Singapore)
 
+## Next-build handoff — 17 November 2026
+
+- Resume Week 46, covering 9–15 November 2026. It remains incomplete; no Week 46 HTML or replacement viewer has been released. Week 45 is still the latest filed report.
+- The local private checkpoint is `output/week46-review/checkpoint-2026-11-17/run-status.json`; the consolidated review is `output/week46-review/week46-source-review-status.json`. These ignored files contain the exact outstanding evidence, source findings, and delivery records. A Git pull does not transfer them: obtain the private handoff through controlled storage, or recheck the operational sources before continuing.
+- Recheck bank coverage through Sunday, cashbook/voucher completeness, conflicting payment dates, completed Rouge POB evidence, and pending bank deductions. Inspect the actual statement filters and transaction dates. Do not infer payment from balance changes or a file's date.
+- OneDrive access resumed during the review. Mailbox access requires renewed authentication before checking newer correspondence; keep credentials and mailbox exports private.
+- Consult the private per-route receipts before repeating a missing-items notice. A completed report may still be sent after an earlier missing-items notice. Preserve the distinction between WhatsApp acceptance and confirmed delivery.
+- Once evidence is complete, compile the weekly register and follow README.md for preparation, checks, visual review, Finance synchronization, approved URL rotation, and formatted two-route delivery. Keep new payment evidence and operational delivery details out of this public repository.
+
 ## Standing workflow — 16 November 2026
 
 - The app automation runs Tuesday at 10:00 am GMT+8 for the previous Monday–Sunday. Verify its actual next timestamp in Singapore time after changes; the first setup had an eight-hour scheduling error.
