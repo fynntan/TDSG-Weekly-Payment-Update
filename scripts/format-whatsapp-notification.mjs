@@ -39,8 +39,8 @@ export function formatNotification({ title, url, groups, kind, existingMessage }
     for (const item of group.items) {
       const structured = typeof item === 'object' && item !== null && ['supplier', 'description', 'amount'].some(key => key in item);
       const detail = typeof item === 'string' ? line(item, 'Detail') : structured
-        ? [line(item.reference, 'Reference'), line(item.supplier, 'Supplier'), line(item.description, 'Description'), line(item.amount, 'Amount with currency')].join('|')
-        : `${line(item.reference, 'Reference')}|${line(item.detail, 'Detail')}`;
+        ? [line(item.reference, 'Reference'), line(item.supplier, 'Supplier'), line(item.description, 'Description'), line(item.amount, 'Amount with currency')].join(' | ')
+        : `${line(item.reference, 'Reference')} | ${line(item.detail, 'Detail')}`;
       const entry = `• ${detail}`;
       if (heading.length + entry.length > budget) throw new Error('An item exceeds the message limit; shorten its description.');
       if (block !== heading && block.length + entry.length + 1 > budget) { blocks.push(block); block = heading; }
