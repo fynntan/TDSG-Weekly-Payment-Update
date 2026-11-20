@@ -1,8 +1,17 @@
 # TDSG Weekly Payment Update — Project Memory
 
-Last updated: 2026-11-17 (Asia/Singapore)
+Last updated: 2026-11-20 (Asia/Singapore)
 
-## Next-build handoff — 17 November 2026
+## Next-build handoff — 20 November 2026
+
+- Week 46, covering 9–15 November 2026, is now filed under `reports/2026-11/TDSG Weekly Payment Report_Week46_09-15Nov2026.html`. The supplied Finance HTML was imported unchanged, with SHA-256 `49744c8f9a1797a9146394f7d023a7209392cf1acd762f2f7f802f6dac2991c3`. This publication was an import of the supplied prepared/reviewed report, not a fresh audit resolving every earlier source-evidence question.
+- The verified viewer defaults to Week 46 and preserves all 18 weekly reports plus TGM June–October history. The private publisher commit is `c308459f3b26513ede137b78fa1f5c23116f1538`; its production deployment succeeded. The new release passed the live SHA check, and all eight superseded weekly links returned HTTP 410. Do not reuse an earlier week's URL for the next build.
+- The local private publication handoff is `output/tdsg-week46/publication-status.json`, with source provenance under `input/weekly-html-imports/2026-11-20/`. It records the release URL, live verification and delivery receipt. The latest request sent the new URL to Venus; WhatsApp acceptance was confirmed, while recipient delivery/read status was not confirmed. Check this handoff before resending.
+- Finance's monthly source and the filed report are byte-identical, so no replacement upload was needed. Validation passed for 18 reports, five notification tests and 18 publisher/viewer tests; desktop and phone portrait/landscape previews were reviewed.
+- The next scheduled build is Tuesday, 24 November 2026 at 10:00 am Asia/Singapore, for ISO Week 47 (16–22 November). Follow README.md for source intake, register preparation, evidence checks, visual review, Finance synchronization, new-URL release and two-route delivery.
+- Private handoff files are ignored and will not arrive with a Git pull. Obtain them through controlled storage or recheck the operational sources. Keep source documents, URLs, recipient configuration and receipts private. The earlier Week 46 review below is historical context, not the current publication status.
+
+## Historical source review — 17 November 2026
 
 - Resume Week 46, covering 9–15 November 2026. It remains incomplete; no Week 46 HTML or replacement viewer has been released. Week 45 is still the latest filed report.
 - The local private checkpoint is `output/week46-review/checkpoint-2026-11-17/run-status.json`; the consolidated review is `output/week46-review/week46-source-review-status.json`. These ignored files contain the exact outstanding evidence, source findings, and delivery records. A Git pull does not transfer them: obtain the private handoff through controlled storage, or recheck the operational sources before continuing.
@@ -19,7 +28,7 @@ Last updated: 2026-11-17 (Asia/Singapore)
 - The latest URL instruction is a **new weekly token-only URL with old weekly links disabled**, superseding the earlier request to reuse a fixed URL. Retain history inside the new viewer and follow the verified publisher release process.
 - Each run sends either the verified new report URL or a specific missing-items list through both configured WhatsApp sender–recipient pairs. Format both outcomes with `scripts/format-whatsapp-notification.mjs` under `WHATSAPP_NOTIFICATIONS.md`, sending all parts in order with per-part receipts. No HTML attachments. Verify each route independently, report failures, and allow a final report link after an earlier missing-items notice.
 - The exact routes, account checks, source review, and email provenance are private under `output/week46-review/`. Do not copy contact numbers, mailbox exports, delivery receipts, or one-off intake scripts into Git. See README.md for the full operating rules.
-- Week 46 remains under review; the private review record is not a completed report or evidence of publication or delivery.
+- At the 16 November source review, Week 46 was incomplete. See the 20 November handoff above for the subsequent supplied-report import and publication; the earlier review record alone does not establish publication or delivery.
 
 ## Week 45 import and publication — 14 November 2026
 
