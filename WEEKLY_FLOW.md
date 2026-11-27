@@ -140,3 +140,8 @@ or a previously successful route. If recovery finds no material change, save its
 check result and stop quietly. If a send is uncertain, query its existing status
 before retrying with the same persistent ID. Report a new failure or changed
 blocker with its actual evidence; never call a partial result complete.
+
+WhatsApp reports contain recipient-facing financial highlights or specific missing
+items, with an empty line between every bullet. Follow WHATSAPP_NOTIFICATIONS.md;
+keep attribution/formatting repairs, Codex replies, Git/tests/deployment and schedule
+implementation updates in this chat, not in recipient report notifications.

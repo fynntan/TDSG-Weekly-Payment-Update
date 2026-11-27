@@ -10,6 +10,12 @@ function line(value, label) {
   return value.trim();
 }
 
+function recipientDetail(value) {
+  const internal = /\b(?:codex|git\s+(?:commit|push)|npm\s+run|github\s+actions|sha-?256|prepared\s+by|reviewed\s+by|prepared\s+for\s+review)\b|\b(?:tests?|CI)\s+(?:passed|failed)\b|\b(?:restored|changed|fixed|updated)\b.{0,60}\b(?:footer|formatter|template|attribution)\b/i;
+  if (internal.test(value)) throw new Error('Keep implementation updates and report attribution in the task chat; notifications need recipient-facing report facts.');
+  return value;
+}
+
 // Callers supply verified facts in plain English. Never rewrite reference codes,
 // currencies, names or amounts automatically to change their capitalization.
 export function formatNotification({ title, url, groups, kind, existingMessage }, limit = 3500) {
@@ -41,10 +47,10 @@ export function formatNotification({ title, url, groups, kind, existingMessage }
       const detail = typeof item === 'string' ? line(item, 'Detail') : structured
         ? [line(item.reference, 'Reference'), line(item.supplier, 'Supplier'), line(item.description, 'Description'), line(item.amount, 'Amount with currency')].join(' | ')
         : `${line(item.reference, 'Reference')} | ${line(item.detail, 'Detail')}`;
-      const entry = `• ${detail}`;
+      const entry = `• ${recipientDetail(detail)}`;
       if (heading.length + entry.length > budget) throw new Error('An item exceeds the message limit; shorten its description.');
-      if (block !== heading && block.length + entry.length + 1 > budget) { blocks.push(block); block = heading; }
-      block += `${block === heading ? '' : '\n'}${entry}`;
+      if (block !== heading && block.length + entry.length + 2 > budget) { blocks.push(block); block = heading; }
+      block += `${block === heading ? '' : '\n\n'}${entry}`;
     }
     blocks.push(block);
   }

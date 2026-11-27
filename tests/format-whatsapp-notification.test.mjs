@@ -8,7 +8,17 @@ test('bold headings, company spacing and exact financial/reference text', () => 
 test('long groups split with heading, numbering and URL on every part', () => {
   const messages = formatNotification({ ...base, groups: [{ company: 'TDSG', items: Array.from({ length: 30 }, (_, i) => `PRF ${i}: verified source details.`) }] }, 300);
   assert.ok(messages.length > 1);
-  for (const message of messages) { assert.ok(message.length <= 300); assert.match(message, /Part \d+ of \d+/); assert.ok(message.includes('*TDSG*')); assert.ok(message.includes(base.url)); }
+  for (const message of messages) { assert.ok(message.length <= 300); assert.match(message, /Part \d+ of \d+/); assert.ok(message.includes('*TDSG*')); assert.ok(message.includes(base.url)); assert.doesNotMatch(message, /^• .+\n• /m); }
+  assert.deepEqual(messages.flatMap(m => [...m.matchAll(/^• (.+)$/gm)].map(x=>x[1])), Array.from({length:30},(_,i)=>`PRF ${i}: verified source details.`));
+});
+test('each report bullet is separated by a blank line', () => {
+  assert.equal(formatNotification({title:'Weekly payment report',groups:[{company:'TDSG',items:['Week 47: USD 16,430.','A bank statement is still required.','No Rouge payments recognized in this period.']} ]})[0], '*Weekly payment report*\n\n*TDSG*\n• Week 47: USD 16,430.\n\n• A bank statement is still required.\n\n• No Rouge payments recognized in this period.');
+});
+test('implementation replies and report attribution cannot leak into recipient notices', () => {
+  for(const detail of ['Codex updated the report.','Prepared by Fynn Tan · Reviewed by Venus Tham has been restored.','GitHub Actions passed.','13 tests passed.','Restored the report footer.','git push completed.']) {
+    assert.throws(()=>formatNotification({...base,groups:[{company:'TDSG',items:[detail]}]}),/recipient-facing/);
+  }
+  assert.doesNotThrow(()=>formatNotification({...base,groups:[{company:'TDSG',items:['Awaiting BCI statements for 21–22 November.','PRF 372 cleared on 26 November and belongs in the next reporting week.']}]}));
 });
 test('storage and usage alerts preserve exact text', () => {
   for (const kind of ['storage', 'usage']) assert.deepEqual(formatNotification({kind, existingMessage: 'Original\nalert'}), ['Original\nalert']);
