@@ -16,6 +16,14 @@ one hour after the primary run. Follow [WEEKLY_FLOW.md](WEEKLY_FLOW.md) and run
 it skips verified completed reports and never duplicates successful sends or an
 unchanged missing-items notice.
 
+If the reporting week contains a month's last day, complete the separate
+[TGM monthly workflow](https://github.com/fynntan/TGM-Monthly-Payment-) first,
+including its HTML and reconciliation workbook, and include that month in the
+combined viewer before publishing or sending the weekly link. The month-end
+dependency also applies to noon recovery; missing monthly evidence produces a
+specific missing-items notice rather than a release described as complete.
+See [WEEKLY_FLOW.md](WEEKLY_FLOW.md) for the month-end and viewer-verification gates.
+
 Each run must produce one of these outcomes for both privately configured
 WhatsApp routes:
 

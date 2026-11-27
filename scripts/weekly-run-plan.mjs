@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { singaporeDate } from './payment-policy.mjs';
 import { isoWeekNumber } from './report-period.mjs';
+import { requiredTgmMonths, monthlyDependenciesComplete } from './month-end-dependencies.mjs';
 
 export function weeklyRunPlan({ now = new Date().toISOString(), calendar, checkpoint = {} }) {
   const date = singaporeDate(now);
@@ -18,7 +19,9 @@ export function weeklyRunPlan({ now = new Date().toISOString(), calendar, checkp
   const end = new Date(local); end.setUTCDate(end.getUTCDate() - 1);
   const start = new Date(end); start.setUTCDate(start.getUTCDate() - 6);
   const periodEnd = end.toISOString().slice(0, 10), periodStart = start.toISOString().slice(0, 10);
-  const context = { date, phase: hour === 11 ? 'primary' : 'recovery', periodStart, periodEnd, week: isoWeekNumber(end) };
+  const monthlyRequirements = requiredTgmMonths(periodStart, periodEnd, checkpoint.requiredTgmMonths || [], checkpoint.periodEnd);
+  const context = { date, phase: hour === 11 ? 'primary' : 'recovery', periodStart, periodEnd, week: isoWeekNumber(end),
+    requiredTgmMonths: monthlyRequirements, runTgmBeforePublication: monthlyRequirements.length > 0 };
   const current = checkpoint.periodEnd === periodEnd;
   // Both routes must have durable, exact-version send evidence. A provider's
   // accepted/sent status is enough for sending, but is not described as delivered.
@@ -29,7 +32,8 @@ export function weeklyRunPlan({ now = new Date().toISOString(), calendar, checkp
   });
   if (current && checkpoint.result === 'report' && checkpoint.verified === true
       && checkpoint.financeSynced === true && /^https:\/\/venus\.milolab\.io\//.test(checkpoint.url || '')
-      && /^[a-f0-9]{64}$/.test(checkpoint.sha256 || '') && checkpoint.version && deliveryComplete) {
+      && /^[a-f0-9]{64}$/.test(checkpoint.sha256 || '') && checkpoint.version && deliveryComplete
+      && monthlyDependenciesComplete(monthlyRequirements, checkpoint)) {
     return { ...context, action: 'already_completed' };
   }
   if (current && checkpoint.leaseUntil && Date.parse(checkpoint.leaseUntil) > Date.parse(now)) {
