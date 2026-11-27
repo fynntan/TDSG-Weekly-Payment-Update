@@ -1,6 +1,6 @@
 # TDSG Weekly Payment Update — Project Memory
 
-Last updated: 2026-11-20 (Asia/Singapore)
+Last updated: 2026-11-27 (Asia/Singapore)
 
 ## Next-build handoff — 20 November 2026
 
@@ -22,7 +22,7 @@ Last updated: 2026-11-20 (Asia/Singapore)
 
 ## Standing workflow — 16 November 2026
 
-- The app automation runs Tuesday at 10:00 am GMT+8 for the previous Monday–Sunday. Verify its actual next timestamp in Singapore time after changes; the first setup had an eight-hour scheduling error.
+- The app automation runs Monday at 11:00 am GMT+8, skipping Singapore public-holiday Mondays for the previous Monday–Sunday. Verify its actual next timestamp in Singapore time after changes; the first setup had an eight-hour scheduling error.
 - Compile the weekly payment Excel when no existing list is available. Its absence alone is not a missing external source; the underlying completed-payment evidence is still required.
 - Check both the operational OneDrive folders and the authorized Venus mailbox. Recent statements and cashbooks may be under `Daily Bank`, and email attachments may resolve documents missing from the PRF folder. Filenames and upload dates do not establish transaction coverage.
 - The latest URL instruction is a **new weekly token-only URL with old weekly links disabled**, superseding the earlier request to reuse a fixed URL. Retain history inside the new viewer and follow the verified publisher release process.
@@ -60,7 +60,7 @@ The presence of a payment under `Payment Request` is not proof that it was paid.
 - Online bank payment: include only when the relevant bank statement shows the deduction, using the posting/value date as the payment date.
 - Cash payment: include only when the completed cash-payment evidence supports payment within the week.
 - Rouge payment on behalf: include only when the completed Rouge POB evidence supports payment within the week.
-- A supplier receipt carrying the completed signature/company stamp is accepted as completed Rouge POB evidence.
+- For Rouge POB, follow the established signed/stamped supporting-copy convention: matching supplier invoices/support returned signed and company-stamped by Venus are sufficient for reporting; do not require an additional TDSG bank deduction or reject the copy solely because the email says it enables RMS to advance payment. Use the signed/stamped confirmation date when no separate completion date is established, and preserve any independently documented actual date. Convert email timestamps to Asia/Singapore before assigning the week. PRFs 365/366 in Week 45 are the precedent. Reconcile revisions and duplicated costs before inclusion. A PRF or an unsigned/unconfirmed invoice alone remains insufficient.
 - Approved or submitted online payment without bank deduction: exclude it and record it in the pending-bank-deduction register.
 - Draft remittance, transfer instruction, PRF, or online-banking submission alone: insufficient evidence of completed payment.
 - Payment completed after the weekly cutoff: include it in the later week containing the actual payment date, not the earlier request week.
@@ -97,7 +97,7 @@ Keep an online payment in the register until bank deduction is confirmed. For a 
 
 ## Required weekly workflow
 
-1. Confirm the previous ISO Monday–Sunday period and cutoff date for the Tuesday run.
+1. Confirm the previous ISO Monday–Sunday period and cutoff date for the Monday run.
 2. Use or compile the weekly Excel; review candidate PRFs, supporting documents, and relevant email attachments.
 3. Identify payment mode and expected paying bank/account.
 4. Verify completed payment through the cutoff using bank, cash, or Rouge POB evidence as applicable.
@@ -155,3 +155,25 @@ China PRF identifier correction:
 - Never commit credentials, tokens, authentication codes, bank login details, confidential source documents, or personal contact details.
 - Keep operational payment documents in the controlled OneDrive folders.
 - Update templates, automated checks, README, and this memory together when approved requirements change.
+
+## Week 47 completion — 27 November 2026
+
+Week 47 (16–22 November) contains five paid lines totaling USD 16,430. The canonical HTML is under `reports/2026-11`; the register, intake provenance, assumptions, filing receipts, live verification, and delivery receipts remain in ignored `output/week47-review` and `output/tdsg-week47`. HTML and register were saved to the Finance November weekly approval folder. The private viewer was published with historical reports preserved and superseded weekly links disabled.
+
+BCI statements cover through 20 November; nil activity on 21–22 November is an explicit user assumption, not statement verification. Three signed/stamped supporting PDFs were filed under November PRFs 373 and 375. On rechecking Week 45, these satisfy the established Rouge POB reporting convention; the earlier extra-payment-proof requirement was too strict. The confirmation replies are dated 27 November in Singapore time (26 November UTC), so belong to Week 48 rather than Week 47. Reconcile the PRF 365/375 revision overlap before recognition. These are not pending TDSG bank deductions. PRF 387 is reused for a paid GNF 46,045,000 canteen reimbursement and a separate Sahel request; keep them distinct. The site cash custodian is Yan Haoming, supported by current requests and the approved prior voucher sequence.
+
+## Report attribution and Rouge precedent correction — 27 November 2026
+
+Retain the established report attribution exactly: `Prepared by Fynn Tan · Reviewed by Venus Tham`. Do not replace it with `Prepared for review`. The user explicitly requested retaining this convention. The current Week 47 total remains USD 16,430 after applying the signed/stamped Rouge rule because the new confirmations are outside its 22 November cutoff.
+
+## Schedule change — 27 November 2026
+
+User requested every Singapore working Monday at 11:00 am. The old automation was absent in the app, so a replacement heartbeat was created for this chat; this supersedes Tuesday10am. Skip Singapore public-holiday Mondays. Keep the previous Monday–Sunday reporting period, report-or-missing-items delivery, both authorized routes, and all evidence rules. Private scheduler verification belongs under output.
+
+Week 47 correction and schedule handoff: `output/tdsg-week47/correction/publication-status.json` supersedes the initial Week 47 publication status. Finance received the corrected HTML, updated weekly register and rolling pending-bank workbook through22November. PRF364 cleared18November; PRF372 cleared26November after cutoff. China50/51 have24November remittance/authorisation evidence but reviewed OCBC coverage ends23November. Keep the remaining339 GNF200million distinct from the already-cleared component. New Guinea bank requests and the resolved PRF 390 schedule reconciliation are in the rolling register’s Later requests tab. The corrected link was sent once per authorized route; consult private receipts before retrying. The next Monday scheduler timestamp was verified as30November2026 11:00SGT (nominal; small execution jitter).
+
+## Hardening and recovery — 27 November 2026
+
+The Monday11am primary run has a noon recovery occurrence in the same app automation. Follow WEEKLY_FLOW.md and `npm run flow:plan`; both occurrences share a private checkpoint and per-version route receipts. Recovery resumes incomplete work, queries uncertain sends, and does not repeat completed report notifications or unchanged missing-items notices. PROJECT_MEMORY rules are enforced by report attribution checks and tested Singapore-date/Rouge/recovery policy helpers.
+
+PRF390 clarification: reading all three attached payroll schedules resolves its requested value to GNF849,737,500 (37,666,500 +258,179,000 +553,892,000). This matches the PRF and draft remittance; the earlier email amount750,205,568 does not match the final support. Retain the resolved explanation, not an outstanding amount-clarification blocker. Bank deduction remains a separate check.

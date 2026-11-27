@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { filenameWeek, isoWeekNumber, reportIsoWeek } from "./report-period.mjs";
+import { hasReportAttribution } from './payment-policy.mjs';
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const reportsRoot = path.join(repositoryRoot, "reports");
@@ -341,6 +342,10 @@ for (const file of files) {
   checks.forEach(([passed, message]) => {
     if (!passed) failures.push(`${name}: ${message}`);
   });
+
+  if (!hasReportAttribution(source)) {
+    failures.push(`${name}: attribution must remain Prepared by Fynn Tan · Reviewed by Venus Tham`);
+  }
 
   const detailRows = Array.from(
     source.matchAll(/<tr\b([^>]*)>([\s\S]*?)<\/tr>/gi),

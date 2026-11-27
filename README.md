@@ -4,11 +4,17 @@ This repository contains the reviewed weekly payment reports and the reusable pr
 
 ## Scheduled report and delivery
 
-The weekly task runs on **Tuesday at 10:00 am Asia/Singapore (GMT+8)** for the
-previous ISO week's Monday through Sunday. Tuesday is the run date, not part of
+The weekly task runs on **Monday at 11:00 am Asia/Singapore (GMT+8)** for the
+previous ISO week's Monday through Sunday. Skip Mondays that are Singapore public holidays. Monday is the run date, not part of
 the reporting period. After a schedule change, verify the actual next scheduled
 timestamp in Singapore time; an enabled task or a recurrence string alone does
 not prove the timing is correct.
+
+The same automation performs a recovery check at **12:00 noon Singapore time**,
+one hour after the primary run. Follow [WEEKLY_FLOW.md](WEEKLY_FLOW.md) and run
+`npm run flow:plan` before either occurrence. Recovery resumes incomplete work;
+it skips verified completed reports and never duplicates successful sends or an
+unchanged missing-items notice.
 
 Each run must produce one of these outcomes for both privately configured
 WhatsApp routes:
@@ -112,7 +118,7 @@ operational locations; they need not exist locally on another machine.
 For each report week:
 
 1. Use or compile the weekly payment Excel, then inspect the matching PRF folder, relevant email threads, and attachments. The report can contain transactions or supplier details not fully described in an existing weekly Excel file.
-2. Include only completed payments dated within the reporting week. A document received later may establish an earlier payment, but must not move the payment or extend the cutoff. Check the statement's actual date filter and the cashbook's transaction dates, not its filename or upload date. Establish coverage through Sunday for all paying accounts and cash/POB activity; never assume missing records mean no payments.
+2. Include only completed payments dated within the reporting week. For Rouge POB, the established reporting convention accepts matching supplier support returned signed and company-stamped by Venus; a separate TDSG bank deduction is not required. Use the signed/stamped confirmation date when no independent completion date is established, convert timestamps to Asia/Singapore, and reconcile revisions against previously reported costs. A document received later may establish an earlier payment, but must not move the payment or extend the cutoff. Check the statement's actual date filter and the cashbook's transaction dates, not its filename or upload date. Establish coverage through Sunday for all paying accounts and cash/POB activity; never assume missing records mean no payments.
 3. Take the payment mode from the PRF and remittance evidence: `OCBC`, `Ecobank`, `Cash`/`Petty Cash - [custodian]`, or `Rouge POB`, as applicable.
 4. Use the actual supplier or ultimate payee shown by the invoice, contract, bill of lading, receipt, or remittance. Do not use the petty-cash custodian as the supplier when the underlying supplier can be identified.
 5. When one remittance settles multiple invoices, show the correct supplier and supporting invoice/contract references and reconcile the remittance to the combined invoices.
@@ -132,6 +138,7 @@ documents, mailbox data, routing, credentials, and delivery evidence out of Git.
 
 ## Locked report standard
 
+- Keep the attribution `Prepared by Fynn Tan · Reviewed by Venus Tham`, matching prior approved reports.
 - Arial throughout: 13 px body, 12 px table content, 11 px table headers, 20 px section headings, and 28 px report date (reduced on mobile).
 - The embedded TOP emblem and full company name share one compact, vertically centered header.
 - No navigation bar; the report is short enough to read as one page.

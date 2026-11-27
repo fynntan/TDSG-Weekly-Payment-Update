@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "flow:plan": "node scripts/weekly-run-plan.mjs",
     "report:prepare": "node scripts/prepare-report.mjs",
     "check": "node scripts/verify-reports.mjs && node --test tests/*.test.mjs",
     "report:sync": "node scripts/sync-monthly-report.mjs",
